@@ -1,6 +1,6 @@
 ﻿namespace CupAPI.Domain.Entities;
 
-public class MenuItem
+public sealed class MenuItem
 {
     public int Id { get; set; }
     public int CategoryId { get; set; }
