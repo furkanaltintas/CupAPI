@@ -7,5 +7,5 @@ public class DetailCategoryDto
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
 
-    public ICollection<ResultMenuItemDto> MenuItems { get; set; }
+    public ICollection<ResultMenuItemDto> MenuItems { get; set; } = null!;
 }
