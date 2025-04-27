@@ -5,7 +5,7 @@ using CupAPI.Domain.Entities;
 
 namespace CupAPI.Application.Mappings;
 
-internal class GeneralMapping : Profile
+public class GeneralMapping : Profile
 {
     public GeneralMapping()
     {
