@@ -1,24 +1,24 @@
-﻿using CupAPI.Application.Dtos.CategoryDtos;
+﻿using CupAPI.API.Controllers.Common;
+using CupAPI.Application.Dtos.CategoryDtos;
+using CupAPI.Application.Dtos.ResponseDtos;
 using CupAPI.Application.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CupAPI.API.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
-public class CategoriesController(ICategoryService categoryService) : ControllerBase
+public class CategoriesController(ICategoryService categoryService) : BaseApiController
 {
     [HttpGet]
     public async Task<IActionResult> GetAllCategories()
     {
-        List<ResultCategoryDto> resultCategoryDtos  = await categoryService.GetAllCategories();
-        return Ok(resultCategoryDtos);
+        var response = await categoryService.GetAllCategories();
+        return HandleResponse(response);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdCategory(int id)
     {
-        DetailCategoryDto detailCategoryDto = await categoryService.GetByIdCategory(id);
+        ResponseDto<DetailCategoryDto> detailCategoryDto = await categoryService.GetByIdCategory(id);
         return Ok(detailCategoryDto);
     }
 
