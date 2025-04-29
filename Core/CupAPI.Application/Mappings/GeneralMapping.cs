@@ -17,6 +17,6 @@ public class GeneralMapping : Profile
         CreateMap<MenuItem, ResultMenuItemDto>().ReverseMap();
         CreateMap<MenuItem, DetailMenuItemDto>().ReverseMap();
         CreateMap<MenuItem, CreateMenuItemDto>().ReverseMap();
-        CreateMap<MenuItem, UpdateMenuItemDto>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+        CreateMap<MenuItem, UpdateMenuItemDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
     }
 }

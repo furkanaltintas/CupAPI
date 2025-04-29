@@ -36,7 +36,8 @@ public class MenuItemService(IGenericRepository<MenuItem> menuItemRepository, IM
 
     public async Task UpdateMenuItem(UpdateMenuItemDto updateMenuItemDto)
     {
-        MenuItem menuItem = mapper.Map<MenuItem>(updateMenuItemDto);
+        MenuItem menuItem = await menuItemRepository.GetByIdAsync(updateMenuItemDto.Id);
+        mapper.Map(updateMenuItemDto, menuItem);
         await menuItemRepository.UpdateAsync(menuItem);
     }
 }
