@@ -18,6 +18,17 @@ public class ResponseDto<T> where T : class
         };
     }
 
+    public static ResponseDto<T> SuccessNoDataResult(string message = "İşlem Başarılı.")
+    {
+        return new ResponseDto<T>
+        {
+            Success = true,
+            Message = message,
+            Data = null,
+            ErrorCode = ErrorCode.None
+        };
+    }
+
     public static ResponseDto<T> Fail(string message, ErrorCode errorCode = ErrorCode.Exception)
     {
         return new ResponseDto<T>

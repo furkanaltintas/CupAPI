@@ -18,8 +18,8 @@ public class CategoriesController(ICategoryService categoryService) : BaseApiCon
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdCategory(int id)
     {
-        ResponseDto<DetailCategoryDto> detailCategoryDto = await categoryService.GetByIdCategory(id);
-        return Ok(detailCategoryDto);
+        var response = await categoryService.GetByIdCategory(id);
+        return HandleResponse(response);
     }
 
     [HttpPost]
@@ -39,7 +39,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseApiCon
     [HttpDelete]
     public async Task<IActionResult> DeleteCategory(int id)
     {
-        await categoryService.DeleteCategory(id);
-        return Ok("Kategori silindi");
+        var response = await categoryService.DeleteCategory(id);
+        return HandleResponse(response);
     }
 }

@@ -7,7 +7,10 @@ using CupAPI.Domain.Entities;
 
 namespace CupAPI.Application.Services.Concrete;
 
-public class CategoryService(IGenericRepository<Category> categoryRepository, IMapper mapper) : ICategoryService
+public class CategoryService(
+    IGenericRepository<Category> categoryRepository, 
+    IMapper mapper
+    ) : ICategoryService
 {
     public async Task AddCategory(CreateCategoryDto createCategoryDto)
     {
@@ -15,10 +18,21 @@ public class CategoryService(IGenericRepository<Category> categoryRepository, IM
         await categoryRepository.AddAsync(category);
     }
 
-    public async Task DeleteCategory(int id)
+    public async Task<ResponseDto<object>> DeleteCategory(int id)
     {
-        Category category = await categoryRepository.GetByIdAsync(id);
-        await categoryRepository.DeleteAsync(category);
+        try
+        {
+            Category category = await categoryRepository.GetByIdAsync(id);
+
+            if (category is null) return ResponseDto<object>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
+
+            await categoryRepository.DeleteAsync(category);
+            return ResponseDto<object>.SuccessNoDataResult("Kategori Silindi");
+        }
+        catch (Exception)
+        {
+            return ResponseDto<object>.Fail("Kategori getirilirken bir hata oluştu", ErrorCode.Exception);
+        }
     }
 
     public async Task<ResponseDto<List<ResultCategoryDto>>> GetAllCategories()
@@ -27,15 +41,14 @@ public class CategoryService(IGenericRepository<Category> categoryRepository, IM
         {
             List<Category> categories = await categoryRepository.GetAllAsync();
 
-            if (categories == null || !categories.Any())
-                return ResponseDto<List<ResultCategoryDto>>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
+            if (categories is null || !categories.Any()) return ResponseDto<List<ResultCategoryDto>>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
 
-            var dtos = mapper.Map<List<ResultCategoryDto>>(categories);
+            List<ResultCategoryDto> dtos = mapper.Map<List<ResultCategoryDto>>(categories);
             return ResponseDto<List<ResultCategoryDto>>.SuccessResult(dtos);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return ResponseDto<List<ResultCategoryDto>>.Fail("Kategori getirilirken bir hata oluştu.", ErrorCode.Exception);
+            return ResponseDto<List<ResultCategoryDto>>.Fail("Kategori getirilirken bir hata oluştu", ErrorCode.Exception);
         }
     }
 
@@ -44,14 +57,12 @@ public class CategoryService(IGenericRepository<Category> categoryRepository, IM
         try
         {
             Category? category = await categoryRepository.GetByIdAsync(id);
-            if (category is null)
-                return ResponseDto<DetailCategoryDto>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
+            if (category is null) return ResponseDto<DetailCategoryDto>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
 
-            var detailCategoryDto = mapper.Map<DetailCategoryDto>(category);
-
+            DetailCategoryDto detailCategoryDto = mapper.Map<DetailCategoryDto>(category);
             return ResponseDto<DetailCategoryDto>.SuccessResult(detailCategoryDto);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return ResponseDto<DetailCategoryDto>.Fail("Kategori getirilirken bir hata oluştu", ErrorCode.Exception);
         }
