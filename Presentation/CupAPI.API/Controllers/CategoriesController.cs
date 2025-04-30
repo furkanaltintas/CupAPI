@@ -1,6 +1,5 @@
 ﻿using CupAPI.API.Controllers.Common;
 using CupAPI.Application.Dtos.CategoryDtos;
-using CupAPI.Application.Dtos.ResponseDtos;
 using CupAPI.Application.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,15 +24,15 @@ public class CategoriesController(ICategoryService categoryService) : BaseApiCon
     [HttpPost]
     public async Task<IActionResult> AddCategory([FromBody] CreateCategoryDto createCategoryDto)
     {
-        await categoryService.AddCategory(createCategoryDto);
-        return Ok("Kategori Oluşturuldu");
+        var response = await categoryService.AddCategory(createCategoryDto);
+        return HandleResponse(response);
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryDto updateCategoryDto)
     {
-        await categoryService.UpdateCategory(updateCategoryDto);
-        return Ok("Kategori Güncellendi");
+        var response = await categoryService.UpdateCategory(updateCategoryDto);
+        return HandleResponse(response);
     }
 
     [HttpDelete]

@@ -7,7 +7,7 @@ public interface ICategoryService
 {
     Task<ResponseDto<List<ResultCategoryDto>>> GetAllCategories();
     Task<ResponseDto<DetailCategoryDto>> GetByIdCategory(int id);
-    Task AddCategory(CreateCategoryDto createCategoryDto);
-    Task UpdateCategory(UpdateCategoryDto updateCategoryDto);
+    Task<ResponseDto<object>> AddCategory(CreateCategoryDto createCategoryDto);
+    Task<ResponseDto<object>> UpdateCategory(UpdateCategoryDto updateCategoryDto);
     Task<ResponseDto<object>> DeleteCategory(int id);
 }

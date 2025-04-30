@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CupAPI.Application.Dtos.CategoryDtos;
+using CupAPI.Application.Dtos.MenuItemDtos;
 using CupAPI.Application.Dtos.ResponseDtos;
 using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
@@ -12,10 +13,20 @@ public class CategoryService(
     IMapper mapper
     ) : ICategoryService
 {
-    public async Task AddCategory(CreateCategoryDto createCategoryDto)
+    public async Task<ResponseDto<object>> AddCategory(CreateCategoryDto createCategoryDto)
     {
-        Category category = mapper.Map<Category>(createCategoryDto);
-        await categoryRepository.AddAsync(category);
+        try
+        {
+            Category category = mapper.Map<Category>(createCategoryDto);
+            await categoryRepository.AddAsync(category);
+
+            return ResponseDto<object>.SuccessNoDataResult("Kategori oluşturuldu");
+
+        }
+        catch (Exception)
+        {
+            return ResponseDto<object>.Fail("Kategori eklenirken bir hata oluştu", ErrorCode.Exception);
+        }
     }
 
     public async Task<ResponseDto<object>> DeleteCategory(int id)
@@ -68,9 +79,21 @@ public class CategoryService(
         }
     }
 
-    public async Task UpdateCategory(UpdateCategoryDto updateCategoryDto)
+    public async Task<ResponseDto<object>> UpdateCategory(UpdateCategoryDto updateCategoryDto)
     {
-        Category category = mapper.Map<Category>(updateCategoryDto);
-        await categoryRepository.UpdateAsync(category);
+        try
+        {
+            Category category = await categoryRepository.GetByIdAsync(updateCategoryDto.Id);
+            if (category is null) return ResponseDto<object>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
+
+            mapper.Map(updateCategoryDto, category);
+            await categoryRepository.UpdateAsync(category);
+
+            return ResponseDto<object>.SuccessNoDataResult("Kategori güncellendi");
+        }
+        catch (Exception)
+        {
+            return ResponseDto<object>.Fail("Kategori güncellenirken bir hata oluştu", ErrorCode.Exception);
+        }
     }
 }
