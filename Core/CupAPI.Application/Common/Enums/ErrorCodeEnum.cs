@@ -1,6 +1,6 @@
-﻿namespace CupAPI.Application.Dtos.ResponseDtos;
+﻿namespace CupAPI.Application.Common.Enums;
 
-public enum ErrorCode
+public enum ErrorCodeEnum
 {
     None = 0,
     NotFound = 1,

@@ -1,5 +1,4 @@
-﻿using CupAPI.Application.Dtos.CategoryDtos;
-using CupAPI.Application.Mappings;
+﻿using CupAPI.Application.Mappings;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Application.Services.Concrete;
 using FluentValidation;
@@ -16,8 +15,10 @@ public static class Ioc
 
         services.AddAutoMapper(typeof(GeneralMapping));
 
-        services.AddValidatorsFromAssemblyContaining<CreateCategoryDto>();
-        services.AddValidatorsFromAssemblyContaining<UpdateCategoryDto>();
+        //services.AddValidatorsFromAssemblyContaining<CreateCategoryDto>();
+        //services.AddValidatorsFromAssemblyContaining<UpdateCategoryDto>();
+        services.AddValidatorsFromAssembly(typeof(Ioc).Assembly);
+
         return services;
     }
 }

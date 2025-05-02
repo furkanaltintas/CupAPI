@@ -1,13 +1,13 @@
-﻿using CupAPI.Application.Dtos.CategoryDtos;
-using CupAPI.Application.Dtos.ResponseDtos;
+﻿using CupAPI.Application.Common.Responses;
+using CupAPI.Application.Dtos.CategoryDtos;
 
 namespace CupAPI.Application.Services.Abstract;
 
 public interface ICategoryService
 {
-    Task<ResponseDto<List<ResultCategoryDto>>> GetAllCategories();
-    Task<ResponseDto<DetailCategoryDto>> GetByIdCategory(int id);
-    Task<ResponseDto<object>> AddCategory(CreateCategoryDto createCategoryDto);
-    Task<ResponseDto<object>> UpdateCategory(UpdateCategoryDto updateCategoryDto);
-    Task<ResponseDto<object>> DeleteCategory(int id);
+    Task<ApiResponse<List<ResultCategoryDto>>> GetAllCategories();
+    Task<ApiResponse<DetailCategoryDto>> GetByIdCategory(int id);
+    Task<ApiResponse<object>> AddCategory(CreateCategoryDto createCategoryDto);
+    Task<ApiResponse<object>> UpdateCategory(UpdateCategoryDto updateCategoryDto);
+    Task<ApiResponse<object>> DeleteCategory(int id);
 }

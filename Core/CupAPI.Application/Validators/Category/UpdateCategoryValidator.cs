@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CupAPI.Application.Validators.Category;
 
-public class AddCategoryValidator : AbstractValidator<CreateCategoryDto>
+public class UpdateCategoryValidator : AbstractValidator<UpdateCategoryDto>
 {
-    public AddCategoryValidator()
+    public UpdateCategoryValidator()
     {
         RuleFor(c => c.Name)
             .NotEmpty().WithMessage("Kategori adı boş olamaz")

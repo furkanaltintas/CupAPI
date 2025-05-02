@@ -1,115 +1,109 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AutoMapper;
+﻿using AutoMapper;
 using CupAPI.Application.Dtos.CategoryDtos;
-using CupAPI.Application.Dtos.MenuItemDtos;
-using CupAPI.Application.Dtos.ResponseDtos;
+using CupAPI.Application.Common.Responses;
 using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
 using FluentValidation;
+using CupAPI.Application.Common.Helpers;
+using CupAPI.Application.Common.Enums;
 
 namespace CupAPI.Application.Services.Concrete;
 
 public class CategoryService(
     IGenericRepository<Category> categoryRepository,
     IMapper mapper,
-    IValidator<CreateCategoryDto> _createCategoryValidator,
-    IValidator<UpdateCategoryDto> _updateCategoryValidator
+    IValidator<CreateCategoryDto> createCategoryValidator,
+    IValidator<UpdateCategoryDto> updateCategoryValidator
     ) : ICategoryService
 {
-    public async Task<ResponseDto<object>> AddCategory(CreateCategoryDto createCategoryDto)
+    public async Task<ApiResponse<object>> AddCategory(CreateCategoryDto createCategoryDto)
     {
         try
         {
-            var validate = await _createCategoryValidator.ValidateAsync(createCategoryDto);
-            if (!validate.IsValid) return ResponseDto<object>
-                    .Fail(string
-                    .Join(" | ", validate.Errors
-                    .Select(e => e.ErrorMessage)), ErrorCode.ValidationError);
+            var response = await ValidationHelper.ValidateAsync(createCategoryValidator, createCategoryDto);
+            if (!response.Success) return response;
 
             Category category = mapper.Map<Category>(createCategoryDto);
             await categoryRepository.AddAsync(category);
 
-            return ResponseDto<object>.SuccessNoDataResult("Kategori oluşturuldu");
+            return ApiResponse<object>.SuccessNoDataResult("Kategori oluşturuldu");
 
         }
         catch (Exception)
         {
-            return ResponseDto<object>.Fail("Kategori eklenirken bir hata oluştu", ErrorCode.Exception);
+            return ApiResponse<object>.Fail("Kategori eklenirken bir hata oluştu", ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ResponseDto<object>> DeleteCategory(int id)
+    public async Task<ApiResponse<object>> DeleteCategory(int id)
     {
         try
         {
             Category category = await categoryRepository.GetByIdAsync(id);
 
-            if (category is null) return ResponseDto<object>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
+            if (category is null) return ApiResponse<object>.Fail("Kategori Bulunamadı", ErrorCodeEnum.NotFound);
 
             await categoryRepository.DeleteAsync(category);
-            return ResponseDto<object>.SuccessNoDataResult("Kategori Silindi");
+            return ApiResponse<object>.SuccessNoDataResult("Kategori Silindi");
         }
         catch (Exception)
         {
-            return ResponseDto<object>.Fail("Kategori getirilirken bir hata oluştu", ErrorCode.Exception);
+            return ApiResponse<object>.Fail("Kategori getirilirken bir hata oluştu", ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ResponseDto<List<ResultCategoryDto>>> GetAllCategories()
+    public async Task<ApiResponse<List<ResultCategoryDto>>> GetAllCategories()
     {
         try
         {
             List<Category> categories = await categoryRepository.GetAllAsync();
 
-            if (categories is null || !categories.Any()) return ResponseDto<List<ResultCategoryDto>>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
+            if (categories is null || !categories.Any()) return ApiResponse<List<ResultCategoryDto>>.Fail("Kategori Bulunamadı", ErrorCodeEnum.NotFound);
 
             List<ResultCategoryDto> dtos = mapper.Map<List<ResultCategoryDto>>(categories);
-            return ResponseDto<List<ResultCategoryDto>>.SuccessResult(dtos);
+            return ApiResponse<List<ResultCategoryDto>>.SuccessResult(dtos);
         }
         catch (Exception)
         {
-            return ResponseDto<List<ResultCategoryDto>>.Fail("Kategori getirilirken bir hata oluştu", ErrorCode.Exception);
+            return ApiResponse<List<ResultCategoryDto>>.Fail("Kategori getirilirken bir hata oluştu", ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ResponseDto<DetailCategoryDto>> GetByIdCategory(int id)
+    public async Task<ApiResponse<DetailCategoryDto>> GetByIdCategory(int id)
     {
         try
         {
             Category? category = await categoryRepository.GetByIdAsync(id);
-            if (category is null) return ResponseDto<DetailCategoryDto>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
+            if (category is null) return ApiResponse<DetailCategoryDto>.Fail("Kategori Bulunamadı", ErrorCodeEnum.NotFound);
 
             DetailCategoryDto detailCategoryDto = mapper.Map<DetailCategoryDto>(category);
-            return ResponseDto<DetailCategoryDto>.SuccessResult(detailCategoryDto);
+            return ApiResponse<DetailCategoryDto>.SuccessResult(detailCategoryDto);
         }
         catch (Exception)
         {
-            return ResponseDto<DetailCategoryDto>.Fail("Kategori getirilirken bir hata oluştu", ErrorCode.Exception);
+            return ApiResponse<DetailCategoryDto>.Fail("Kategori getirilirken bir hata oluştu", ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ResponseDto<object>> UpdateCategory(UpdateCategoryDto updateCategoryDto)
+    public async Task<ApiResponse<object>> UpdateCategory(UpdateCategoryDto updateCategoryDto)
     {
         try
         {
-            var validate = await _updateCategoryValidator.ValidateAsync(updateCategoryDto);
-            if (!validate.IsValid) return ResponseDto<object>
-                    .Fail(string
-                    .Join(" | ", validate.Errors
-                    .Select(e => e.ErrorMessage)), ErrorCode.ValidationError);
+            var response = await ValidationHelper.ValidateAsync(updateCategoryValidator, updateCategoryDto);
+            if (!response.Success) return response;
 
             Category category = await categoryRepository.GetByIdAsync(updateCategoryDto.Id);
-            if (category is null) return ResponseDto<object>.Fail("Kategori Bulunamadı", ErrorCode.NotFound);
+            if (category is null) return ApiResponse<object>.Fail("Kategori Bulunamadı", ErrorCodeEnum.NotFound);
 
             mapper.Map(updateCategoryDto, category);
             await categoryRepository.UpdateAsync(category);
 
-            return ResponseDto<object>.SuccessNoDataResult("Kategori güncellendi");
+            return ApiResponse<object>.SuccessNoDataResult("Kategori güncellendi");
         }
         catch (Exception)
         {
-            return ResponseDto<object>.Fail("Kategori güncellenirken bir hata oluştu", ErrorCode.Exception);
+            return ApiResponse<object>.Fail("Kategori güncellenirken bir hata oluştu", ErrorCodeEnum.Exception);
         }
     }
 }
