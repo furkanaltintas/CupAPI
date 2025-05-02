@@ -5,7 +5,7 @@ public class ResponseDto<T> where T : class
     public bool Success { get; init; }
     public string Message { get; init; } = string.Empty;
     public T? Data { get; init; }
-    public ErrorCode ErrorCode { get; init; } = ErrorCode.None;
+    public ErrorCode ErrorCode { get; init; } = ErrorCode.None; 
 
     public static ResponseDto<T> SuccessResult(T data, string message = "İşlem Başarılı.")
     {

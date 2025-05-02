@@ -1,27 +1,22 @@
-using CupAPI.Application.Interfaces;
-using CupAPI.Application.Mappings;
-using CupAPI.Application.Services.Abstract;
-using CupAPI.Application.Services.Concrete;
-using CupAPI.Persistence.Context;
-using CupAPI.Persistence.Repository;
-using Microsoft.EntityFrameworkCore;
+using CupAPI.Application;
+using CupAPI.Persistence;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.ApplicationServices();
+builder.Services.PersistenceService(builder.Configuration);
 
-builder.Services.AddAutoMapper(typeof(GeneralMapping));
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
+
+
+
+/**************************************************************/
 
 var app = builder.Build();
 
