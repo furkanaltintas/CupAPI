@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace CupAPI.Application.Validators.Category;
 
-public class AddCategoryValidator : AbstractValidator<CreateCategoryDto>
+public sealed class AddCategoryValidator : AbstractValidator<CreateCategoryDto>
 {
     public AddCategoryValidator()
     {

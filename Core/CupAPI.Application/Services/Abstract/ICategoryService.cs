@@ -1,5 +1,5 @@
-﻿using CupAPI.Application.Common.Responses;
-using CupAPI.Application.Dtos.CategoryDtos;
+﻿using CupAPI.Application.Dtos.CategoryDtos;
+using CupAPI.Application.Common.Responses;
 
 namespace CupAPI.Application.Services.Abstract;
 

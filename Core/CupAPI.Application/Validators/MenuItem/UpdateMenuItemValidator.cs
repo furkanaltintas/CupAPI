@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace CupAPI.Application.Validators.MenuItem;
 
-public class UpdateMenuItemValidator : AbstractValidator<UpdateMenuItemDto>
+public sealed class UpdateMenuItemValidator : AbstractValidator<UpdateMenuItemDto>
 {
     public UpdateMenuItemValidator()
     {

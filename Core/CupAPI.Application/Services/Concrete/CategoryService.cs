@@ -1,13 +1,13 @@
-﻿using AutoMapper;
-using CupAPI.Application.Common.Constants;
-using CupAPI.Application.Common.Enums;
-using CupAPI.Application.Common.Helpers;
-using CupAPI.Application.Common.Responses;
+﻿using CupAPI.Application.Services.Abstract;
 using CupAPI.Application.Dtos.CategoryDtos;
+using CupAPI.Application.Common.Responses;
+using CupAPI.Application.Common.Constants;
+using CupAPI.Application.Common.Helpers;
+using CupAPI.Application.Common.Enums;
 using CupAPI.Application.Interfaces;
-using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
 using FluentValidation;
+using AutoMapper;
 
 namespace CupAPI.Application.Services.Concrete;
 

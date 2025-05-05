@@ -1,12 +1,12 @@
-﻿using AutoMapper;
-using CupAPI.Application.Dtos.CategoryDtos;
+﻿using CupAPI.Application.Dtos.CategoryDtos;
 using CupAPI.Application.Dtos.MenuItemDtos;
 using CupAPI.Application.Dtos.TableDtos;
 using CupAPI.Domain.Entities;
+using AutoMapper;
 
 namespace CupAPI.Application.Mappings;
 
-public class GeneralMapping : Profile
+public sealed class GeneralMapping : Profile
 {
     public GeneralMapping()
     {

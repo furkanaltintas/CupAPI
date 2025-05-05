@@ -1,14 +1,14 @@
-﻿using AutoMapper;
+﻿using CupAPI.Application.Services.Abstract;
 using CupAPI.Application.Common.Constants;
-using CupAPI.Application.Common.Enums;
-using CupAPI.Application.Common.Helpers;
 using CupAPI.Application.Common.Responses;
+using CupAPI.Application.Common.Helpers;
 using CupAPI.Application.Dtos.TableDtos;
+using CupAPI.Application.Common.Enums;
 using CupAPI.Application.Interfaces;
-using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
 using CupAPI.Domain.Enums;
 using FluentValidation;
+using AutoMapper;
 
 namespace CupAPI.Application.Services.Concrete;
 
@@ -73,7 +73,7 @@ public class TableService(
     {
         try
         {
-            Table? table = await tableRepository.GetByIdAsync(id);
+            Table? table = await tableRepository.GetByIdAsync(1); // GÜNCELLENECEK
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             DetailTableDto detailTableDto = mapper.Map<DetailTableDto>(table);
@@ -105,7 +105,7 @@ public class TableService(
     {
         try
         {
-            Table? table = await tableRepository.GetByIdAsync(1); // DÜZELTİLECEK
+            Table? table = await tableRepository.GetByIdAsync(1); // GÜNCELLENECEK
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             DetailTableDto detailTableDto = mapper.Map<DetailTableDto>(table);
@@ -121,7 +121,7 @@ public class TableService(
     {
         try
         {
-            Table? table = await tableRepository.GetByIdAsync(1); // DÜZELTİLECEK
+            Table? table = await tableRepository.GetByIdAsync(1); // GÜNCELLENECEK
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             DetailTableDto detailTableDto = mapper.Map<DetailTableDto>(table);

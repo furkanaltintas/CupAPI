@@ -2,7 +2,7 @@
 
 namespace CupAPI.Application.Common.Responses;
 
-public class ApiResponse<T> where T : class
+public sealed class ApiResponse<T> where T : class
 {
     public bool Success { get; init; }
     public string Message { get; init; } = string.Empty;

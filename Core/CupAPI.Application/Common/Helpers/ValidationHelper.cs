@@ -1,5 +1,5 @@
-﻿using CupAPI.Application.Common.Enums;
-using CupAPI.Application.Common.Responses;
+﻿using CupAPI.Application.Common.Responses;
+using CupAPI.Application.Common.Enums;
 using FluentValidation;
 
 namespace CupAPI.Application.Common.Helpers;
