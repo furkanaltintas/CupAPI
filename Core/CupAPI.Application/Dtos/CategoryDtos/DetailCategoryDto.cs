@@ -2,7 +2,7 @@
 
 namespace CupAPI.Application.Dtos.CategoryDtos;
 
-public class DetailCategoryDto
+public sealed record DetailCategoryDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

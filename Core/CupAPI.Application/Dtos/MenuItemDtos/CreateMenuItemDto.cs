@@ -1,6 +1,6 @@
 ﻿namespace CupAPI.Application.Dtos.MenuItemDtos;
 
-public class CreateMenuItemDto
+public sealed record CreateMenuItemDto
 {
     public int CategoryId { get; set; }
     public string Name { get; set; } = string.Empty;

@@ -1,6 +1,6 @@
 ﻿namespace CupAPI.Application.Dtos.MenuItemDtos;
 
-public class UpdateMenuItemDto
+public sealed record UpdateMenuItemDto
 {
     public int Id { get; set; }
     public int CategoryId { get; set; }

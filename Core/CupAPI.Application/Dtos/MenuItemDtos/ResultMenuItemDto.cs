@@ -2,7 +2,7 @@
 
 namespace CupAPI.Application.Dtos.MenuItemDtos;
 
-public class ResultMenuItemDto
+public sealed record ResultMenuItemDto
 {
     public int Id { get; set; }
     public int CategoryId { get; set; }
