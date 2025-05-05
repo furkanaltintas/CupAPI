@@ -15,8 +15,4 @@
     <ProjectReference Include="..\CupAPI.Domain\CupAPI.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\ResponseDtos\" />
-  </ItemGroup>
-
 </Project>
