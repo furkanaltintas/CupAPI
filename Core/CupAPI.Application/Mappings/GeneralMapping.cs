@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CupAPI.Application.Dtos.CategoryDtos;
 using CupAPI.Application.Dtos.MenuItemDtos;
+using CupAPI.Application.Dtos.TableDtos;
 using CupAPI.Domain.Entities;
 
 namespace CupAPI.Application.Mappings;
@@ -18,5 +19,10 @@ public class GeneralMapping : Profile
         CreateMap<MenuItem, DetailMenuItemDto>().ReverseMap();
         CreateMap<MenuItem, CreateMenuItemDto>().ReverseMap();
         CreateMap<MenuItem, UpdateMenuItemDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+
+        CreateMap<Table, ResultTableDto>().ReverseMap();
+        CreateMap<Table, DetailTableDto>().ReverseMap();
+        CreateMap<Table, CreateTableDto>().ReverseMap();
+        CreateMap<Table, UpdateTableDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
     }
 }
