@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CupAPI.Application.Common.Constants;
 using CupAPI.Application.Common.Enums;
 using CupAPI.Application.Common.Helpers;
 using CupAPI.Application.Common.Responses;
@@ -17,7 +18,7 @@ public class MenuItemService(
     IValidator<CreateMenuItemDto> createMenuItemValidator,
     IValidator<UpdateMenuItemDto> updateMenuItemValidator) : IMenuItemService
 {
-    public async Task<ApiResponse<object>> AddMenuItem(CreateMenuItemDto createMenuItemDto)
+    public async Task<ApiResponse<object>> AddAsync(CreateMenuItemDto createMenuItemDto)
     {
         try
         {
@@ -27,58 +28,65 @@ public class MenuItemService(
             MenuItem menuItem = mapper.Map<MenuItem>(createMenuItemDto);
             await menuItemRepository.AddAsync(menuItem);
 
-            return ApiResponse<object>.SuccessNoDataResult("Menü oluşturuldu");
+            return ApiResponse<object>.SuccessNoDataResult(Messages.MenuItem.Created);
         }
-        catch (Exception)
+        catch
         {
-            return ApiResponse<object>.Fail("Menü eklenirken bir hata oluştu", ErrorCodeEnum.Exception);
+            return ApiResponse<object>.Fail(Messages.MenuItem.ErrorWhileAdding, ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ApiResponse<object>> DeleteMenuItem(int id)
+    public async Task<ApiResponse<object>> DeleteAsync(int id)
     {
         try
         {
             MenuItem menuItem = await menuItemRepository.GetByIdAsync(id);
-            if (menuItem is null) return ApiResponse<object>.Fail("Menü Bulunamadı", ErrorCodeEnum.NotFound);
+            if (menuItem is null) return ApiResponse<object>.Fail(Messages.MenuItem.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             await menuItemRepository.DeleteAsync(menuItem);
-            return ApiResponse<object>.SuccessNoDataResult("Menü silindi");
+            return ApiResponse<object>.SuccessNoDataResult(Messages.MenuItem.Deleted);
         }
-        catch (Exception)
+        catch
         {
-            return ApiResponse<object>.Fail("Menü silinirken bir hata oluştu", ErrorCodeEnum.Exception);
+            return ApiResponse<object>.Fail(Messages.MenuItem.ErrorWhileDeleting, ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ApiResponse<List<ResultMenuItemDto>>> GetAllMenuItems()
+    public async Task<ApiResponse<List<ResultMenuItemDto>>> GetAllAsync()
     {
         try
         {
             List<Category> categories = await categoryRepository.GetAllAsync();
             List<MenuItem> menuItems = await menuItemRepository.GetAllAsync();
 
-            if (menuItems is null || !menuItems.Any()) return ApiResponse<List<ResultMenuItemDto>>.Fail("Menü Bulunamadı", ErrorCodeEnum.NotFound);
+            if (menuItems is null || !menuItems.Any()) return ApiResponse<List<ResultMenuItemDto>>.Fail(Messages.MenuItem.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             List<ResultMenuItemDto> dtos = mapper.Map<List<ResultMenuItemDto>>(menuItems);
             return ApiResponse<List<ResultMenuItemDto>>.SuccessResult(dtos);
         }
-        catch (Exception)
+        catch
         {
-            return ApiResponse<List<ResultMenuItemDto>>.Fail("Menü getirilirken bir hata oluştu", ErrorCodeEnum.Exception);
+            return ApiResponse<List<ResultMenuItemDto>>.Fail(Messages.MenuItem.ErrorWhileFetching, ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ApiResponse<DetailMenuItemDto>> GetByIdMenuItem(int id)
+    public async Task<ApiResponse<DetailMenuItemDto>> GetByIdAsync(int id)
     {
-        MenuItem menuItem = await menuItemRepository.GetByIdAsync(id);
-        if (menuItem is null) return ApiResponse<DetailMenuItemDto>.Fail("Menü Bulunamadı", ErrorCodeEnum.NotFound);
+        try
+        {
+            MenuItem menuItem = await menuItemRepository.GetByIdAsync(id);
+            if (menuItem is null) return ApiResponse<DetailMenuItemDto>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
 
-        DetailMenuItemDto detailMenuItemDto = mapper.Map<DetailMenuItemDto>(menuItem);
-        return ApiResponse<DetailMenuItemDto>.SuccessResult(detailMenuItemDto);
+            DetailMenuItemDto detailMenuItemDto = mapper.Map<DetailMenuItemDto>(menuItem);
+            return ApiResponse<DetailMenuItemDto>.SuccessResult(detailMenuItemDto);
+        }
+        catch
+        {
+            return ApiResponse<DetailMenuItemDto>.Fail(Messages.MenuItem.ErrorWhileFetching, ErrorCodeEnum.Exception);
+        }
     }
 
-    public async Task<ApiResponse<object>> UpdateMenuItem(UpdateMenuItemDto updateMenuItemDto)
+    public async Task<ApiResponse<object>> UpdateAsync(UpdateMenuItemDto updateMenuItemDto)
     {
         try
         {
@@ -86,16 +94,16 @@ public class MenuItemService(
             if (!response.Success) return response;
 
             MenuItem menuItem = await menuItemRepository.GetByIdAsync(updateMenuItemDto.Id);
-            if (menuItem is null) return ApiResponse<object>.Fail("Menü Bulunamadı", ErrorCodeEnum.NotFound);
+            if (menuItem is null) return ApiResponse<object>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
 
             mapper.Map(updateMenuItemDto, menuItem);
             await menuItemRepository.UpdateAsync(menuItem);
 
-            return ApiResponse<object>.SuccessNoDataResult("Menü güncellendi");
+            return ApiResponse<object>.SuccessNoDataResult(Messages.MenuItem.Updated);
         }
-        catch (Exception)
+        catch
         {
-            return ApiResponse<object>.Fail("Menü silinirken bir hata oluştu", ErrorCodeEnum.Exception);
+            return ApiResponse<object>.Fail(Messages.MenuItem.ErrorWhileUpdating, ErrorCodeEnum.Exception);
         }
     }
 }

@@ -5,9 +5,9 @@ namespace CupAPI.Application.Services.Abstract;
 
 public interface ICategoryService
 {
-    Task<ApiResponse<List<ResultCategoryDto>>> GetAllCategories();
-    Task<ApiResponse<DetailCategoryDto>> GetByIdCategory(int id);
-    Task<ApiResponse<object>> AddCategory(CreateCategoryDto createCategoryDto);
-    Task<ApiResponse<object>> UpdateCategory(UpdateCategoryDto updateCategoryDto);
-    Task<ApiResponse<object>> DeleteCategory(int id);
+    Task<ApiResponse<List<ResultCategoryDto>>> GetAllAsync();
+    Task<ApiResponse<DetailCategoryDto>> GetByIdAsync(int id);
+    Task<ApiResponse<object>> AddAsync(CreateCategoryDto createCategoryDto);
+    Task<ApiResponse<object>> UpdateAsync(UpdateCategoryDto updateCategoryDto);
+    Task<ApiResponse<object>> DeleteAsync(int id);
 }
