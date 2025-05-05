@@ -11,6 +11,7 @@ using FluentValidation;
 namespace CupAPI.Application.Services.Concrete;
 
 public class MenuItemService(
+    IGenericRepository<Category> categoryRepository,
     IGenericRepository<MenuItem> menuItemRepository,
     IMapper mapper,
     IValidator<CreateMenuItemDto> createMenuItemValidator,
@@ -26,7 +27,7 @@ public class MenuItemService(
             MenuItem menuItem = mapper.Map<MenuItem>(createMenuItemDto);
             await menuItemRepository.AddAsync(menuItem);
 
-            return ApiResponse<object>.Fail("Menü oluşturuldu");
+            return ApiResponse<object>.SuccessNoDataResult("Menü oluşturuldu");
         }
         catch (Exception)
         {
@@ -39,9 +40,10 @@ public class MenuItemService(
         try
         {
             MenuItem menuItem = await menuItemRepository.GetByIdAsync(id);
-            await menuItemRepository.DeleteAsync(menuItem);
+            if (menuItem is null) return ApiResponse<object>.Fail("Menü Bulunamadı", ErrorCodeEnum.NotFound);
 
-            return ApiResponse<object>.Fail("Menü silindi");
+            await menuItemRepository.DeleteAsync(menuItem);
+            return ApiResponse<object>.SuccessNoDataResult("Menü silindi");
         }
         catch (Exception)
         {
@@ -53,6 +55,7 @@ public class MenuItemService(
     {
         try
         {
+            List<Category> categories = await categoryRepository.GetAllAsync();
             List<MenuItem> menuItems = await menuItemRepository.GetAllAsync();
 
             if (menuItems is null || !menuItems.Any()) return ApiResponse<List<ResultMenuItemDto>>.Fail("Menü Bulunamadı", ErrorCodeEnum.NotFound);
@@ -88,7 +91,7 @@ public class MenuItemService(
             mapper.Map(updateMenuItemDto, menuItem);
             await menuItemRepository.UpdateAsync(menuItem);
 
-            return ApiResponse<object>.Fail("Menü silindi");
+            return ApiResponse<object>.SuccessNoDataResult("Menü güncellendi");
         }
         catch (Exception)
         {

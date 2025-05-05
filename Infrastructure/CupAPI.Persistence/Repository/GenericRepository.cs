@@ -28,6 +28,11 @@ public class GenericRepository<T>(AppDbContext context) : IGenericRepository<T> 
         return await context.Set<T>().FindAsync(id);
     }
 
+    public IQueryable<T> Query()
+    {
+        return context.Set<T>().AsQueryable();
+    }
+
     public async Task UpdateAsync(T entity)
     {
         context.Set<T>().Update(entity);

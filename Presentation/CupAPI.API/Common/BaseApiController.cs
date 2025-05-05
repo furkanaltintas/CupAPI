@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using CupAPI.Application.Dtos.ResponseDtos;
+using CupAPI.Application.Common.Responses;
+using CupAPI.Application.Common.Enums;
 
 namespace CupAPI.API.Controllers.Common;
 
@@ -7,18 +8,18 @@ namespace CupAPI.API.Controllers.Common;
 [Route("api/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {
-    protected IActionResult HandleResponse<T>(ResponseDto<T> response) where T : class
+    protected IActionResult HandleResponse<T>(ApiResponse<T> response) where T : class
     {
         if (response.Success) return Ok(response);
 
         return response.ErrorCode switch
         {
-            ErrorCode.NotFound => NotFound(response),
-            ErrorCode.BadRequest => BadRequest(response),
-            ErrorCode.Unauthorized => Unauthorized(response),
-            ErrorCode.ValidationError => UnprocessableEntity(response),
-            ErrorCode.Conflict => Conflict(response),
-            ErrorCode.Forbidden => Forbid(),
+            ErrorCodeEnum.NotFound => NotFound(response),
+            ErrorCodeEnum.BadRequest => BadRequest(response),
+            ErrorCodeEnum.Unauthorized => Unauthorized(response),
+            ErrorCodeEnum.ValidationError => UnprocessableEntity(response),
+            ErrorCodeEnum.Conflict => Conflict(response),
+            ErrorCodeEnum.Forbidden => Forbid(),
             _ => StatusCode(500, response)
         };
     }

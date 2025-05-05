@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CupAPI.Application.Validators.MenuItem;
 
-public class AddMenuItemValidator : AbstractValidator<CreateMenuItemDto>
+public class UpdateMenuItemValidator : AbstractValidator<UpdateMenuItemDto>
 {
-    public AddMenuItemValidator()
+    public UpdateMenuItemValidator()
     {
         RuleFor(c => c.Name)
             .NotEmpty().WithMessage("Menü adı boş olamaz")

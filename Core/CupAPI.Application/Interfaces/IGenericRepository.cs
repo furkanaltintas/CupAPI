@@ -7,4 +7,6 @@ public interface IGenericRepository<T> where T : class, new()
     Task AddAsync(T entity);
     Task UpdateAsync(T entity);
     Task DeleteAsync(T entity);
+
+    IQueryable<T> Query();
 }
