@@ -12,6 +12,7 @@ public static class Ioc
     {
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IMenuItemService, MenuItemService>();
+        services.AddScoped<ITableService, TableService>();
 
         services.AddAutoMapper(typeof(GeneralMapping));
 

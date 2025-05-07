@@ -15,6 +15,7 @@ public static class Ioc
         options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<ITableRepository, TableRepository>();
 
         return services;
     }
