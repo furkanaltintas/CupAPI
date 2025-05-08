@@ -13,7 +13,7 @@ public sealed class GeneralMapping : Profile
         CreateMap<Category, ResultCategoryDto>().ReverseMap();
         CreateMap<Category, DetailCategoryDto>().ReverseMap();
         CreateMap<Category, CreateCategoryDto>().ReverseMap();
-        CreateMap<Category, UpdateCategoryDto>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+        CreateMap<Category, UpdateCategoryDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
 
         CreateMap<MenuItem, ResultMenuItemDto>().ReverseMap();
         CreateMap<MenuItem, DetailMenuItemDto>().ReverseMap();

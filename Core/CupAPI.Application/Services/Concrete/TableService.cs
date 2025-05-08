@@ -1,14 +1,13 @@
-﻿using CupAPI.Application.Services.Abstract;
+﻿using AutoMapper;
 using CupAPI.Application.Common.Constants;
-using CupAPI.Application.Common.Responses;
-using CupAPI.Application.Common.Helpers;
-using CupAPI.Application.Dtos.TableDtos;
 using CupAPI.Application.Common.Enums;
+using CupAPI.Application.Common.Helpers;
+using CupAPI.Application.Common.Rules.TableRules;
+using CupAPI.Application.Dtos.TableDtos;
 using CupAPI.Application.Interfaces;
+using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
 using CupAPI.Domain.Enums;
-using FluentValidation;
-using AutoMapper;
 
 namespace CupAPI.Application.Services.Concrete;
 
@@ -16,40 +15,39 @@ public class TableService(
     IGenericRepository<Table> tableRepository,
     ITableRepository repository,
     IMapper mapper,
-    IValidator<CreateTableDto> createTableValidator,
-    IValidator<UpdateTableDto> updateTableValidator) : ITableService
+    IValidationHelper validationHelper,
+    TableBusinessRules tableBusinessRules) : ITableService
 {
-    public async Task<ApiResponse<object>> AddAsync(CreateTableDto createTableDto)
+    public async Task<ApiResponse<String>> AddAsync(CreateTableDto createTableDto)
     {
         try
         {
-            var response = await ValidationHelper.ValidateAsync(createTableValidator, createTableDto);
+            var response = await validationHelper.ValidateAsync<CreateTableDto, String>(createTableDto);
             if (!response.Success) return response;
 
             Table table = mapper.Map<Table>(createTableDto);
             await tableRepository.AddAsync(table);
-            return ApiResponse<object>.SuccessNoDataResult(Messages.Table.Created);
+            return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Created);
         }
         catch
         {
-            return ApiResponse<object>.Fail(Messages.Table.ErrorWhileAdding, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.Table.ErrorWhileAdding, ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ApiResponse<object>> DeleteAsync(int id)
+    public async Task<ApiResponse<String>> DeleteAsync(int id)
     {
         try
         {
-            Table table = await tableRepository.GetByIdAsync(id);
+            var response = await tableBusinessRules.TableShouldExist(id);
+            if (!response.Success) return ApiResponse<String>.Fail(response.Message, response.ErrorCode);
 
-            if (table is null) return ApiResponse<object>.Fail(Messages.Table.NotFound, ErrorCodeEnum.NotFound);
-
-            await tableRepository.DeleteAsync(table);
-            return ApiResponse<object>.SuccessNoDataResult(Messages.Table.Deleted);
+            await tableRepository.DeleteAsync(response.Data!);
+            return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Deleted);
         }
         catch
         {
-            return ApiResponse<object>.Fail(Messages.Table.ErrorWhileDeleting, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.Table.ErrorWhileDeleting, ErrorCodeEnum.Exception);
         }
     }
 
@@ -90,10 +88,10 @@ public class TableService(
     {
         try
         {
-            Table? table = await tableRepository.GetByIdAsync(id);
-            if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            var response = await tableBusinessRules.TableShouldExist(id);
+            if (!response.Success) return ApiResponse<DetailTableDto>.Fail(response.Message, response.ErrorCode);
 
-            DetailTableDto detailTableDto = mapper.Map<DetailTableDto>(table);
+            DetailTableDto detailTableDto = mapper.Map<DetailTableDto>(response.Data!);
             return ApiResponse<DetailTableDto>.SuccessResult(detailTableDto);
         }
         catch
@@ -134,24 +132,26 @@ public class TableService(
         }
     }
 
-    public async Task<ApiResponse<object>> UpdateAsync(UpdateTableDto updateTableDto)
+    public async Task<ApiResponse<String>> UpdateAsync(UpdateTableDto updateTableDto)
     {
         try
         {
-            var response = await ValidationHelper.ValidateAsync(updateTableValidator, updateTableDto);
-            if (!response.Success) return response;
+            var validateResponse = await validationHelper.ValidateAsync<UpdateTableDto, String>(updateTableDto);
+            if (!validateResponse.Success) return validateResponse;
 
-            Table table = await tableRepository.GetByIdAsync(updateTableDto.Id);
-            if (table is null) return ApiResponse<object>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            var businessResponse = await tableBusinessRules.TableShouldExist(updateTableDto.Id);
+            if (!businessResponse.Success) return ApiResponse<String>.Fail(businessResponse.Message, businessResponse.ErrorCode);
 
-            mapper.Map(updateTableDto, table);
-            await tableRepository.UpdateAsync(table);
+            if (businessResponse.Data is null) return ApiResponse<String>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
 
-            return ApiResponse<object>.SuccessNoDataResult(Messages.Table.Updated);
+            mapper.Map(updateTableDto, businessResponse.Data!);
+            await tableRepository.UpdateAsync(businessResponse.Data!);
+
+            return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Updated);
         }
         catch
         {
-            return ApiResponse<object>.Fail(Messages.Table.ErrorWhileUpdating, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.Table.ErrorWhileUpdating, ErrorCodeEnum.Exception);
         }
     }
 }

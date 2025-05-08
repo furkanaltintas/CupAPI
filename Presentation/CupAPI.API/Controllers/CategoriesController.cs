@@ -8,35 +8,35 @@ namespace CupAPI.API.Controllers;
 public class CategoriesController(ICategoryService categoryService) : BaseApiController
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllCategories()
+    public async Task<IActionResult> GetAll()
     {
         var response = await categoryService.GetAllAsync();
         return HandleResponse(response);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdCategory(int id)
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var response = await categoryService.GetByIdAsync(id);
         return HandleResponse(response);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddCategory([FromBody] CreateCategoryDto createCategoryDto)
+    public async Task<IActionResult> Add([FromBody] CreateCategoryDto createCategoryDto)
     {
         var response = await categoryService.AddAsync(createCategoryDto);
         return HandleResponse(response);
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryDto updateCategoryDto)
+    public async Task<IActionResult> Update([FromBody] UpdateCategoryDto updateCategoryDto)
     {
         var response = await categoryService.UpdateAsync(updateCategoryDto);
         return HandleResponse(response);
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteCategory(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         var response = await categoryService.DeleteAsync(id);
         return HandleResponse(response);

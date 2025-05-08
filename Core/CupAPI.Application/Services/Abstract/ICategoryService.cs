@@ -1,5 +1,4 @@
 ﻿using CupAPI.Application.Dtos.CategoryDtos;
-using CupAPI.Application.Common.Responses;
 
 namespace CupAPI.Application.Services.Abstract;
 
@@ -7,7 +6,7 @@ public interface ICategoryService
 {
     Task<ApiResponse<List<ResultCategoryDto>>> GetAllAsync();
     Task<ApiResponse<DetailCategoryDto>> GetByIdAsync(int id);
-    Task<ApiResponse<object>> AddAsync(CreateCategoryDto createCategoryDto);
-    Task<ApiResponse<object>> UpdateAsync(UpdateCategoryDto updateCategoryDto);
-    Task<ApiResponse<object>> DeleteAsync(int id);
+    Task<ApiResponse<String>> AddAsync(CreateCategoryDto createCategoryDto);
+    Task<ApiResponse<String>> UpdateAsync(UpdateCategoryDto updateCategoryDto);
+    Task<ApiResponse<String>> DeleteAsync(int id);
 }

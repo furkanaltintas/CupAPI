@@ -6,19 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CupAPI.API.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
 public class TablesController(ITableService tableService) : BaseApiController
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllTables()
+    public async Task<IActionResult> GetAll()
     {
         var response = await tableService.GetAllAsync();
         return HandleResponse(response);
     }
 
     [HttpGet("id/{id:int}")]
-    public async Task<IActionResult> GetByIdTable(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var response = await tableService.GetByIdAsync(id);
         return HandleResponse(response);
@@ -38,7 +36,7 @@ public class TablesController(ITableService tableService) : BaseApiController
         return HandleResponse(response);
     }
 
-    [HttpGet("type/{tableType:TableType}")]
+    [HttpGet("type/{tableType}")]
     public async Task<IActionResult> GetByType(TableType tableType)
     {
         var response = await tableService.GetByTypeAsync(tableType);
@@ -46,21 +44,21 @@ public class TablesController(ITableService tableService) : BaseApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddTable([FromBody] CreateTableDto createTableDto)
+    public async Task<IActionResult> Add([FromBody] CreateTableDto createTableDto)
     {
         var response =  await tableService.AddAsync(createTableDto);
         return HandleResponse(response);
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateTable([FromBody] UpdateTableDto updateTableDto)
+    public async Task<IActionResult> Update([FromBody] UpdateTableDto updateTableDto)
     {
         var response = await tableService.UpdateAsync(updateTableDto);
         return HandleResponse(response);
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteTable(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         var response = await tableService.DeleteAsync(id);
         return HandleResponse(response);

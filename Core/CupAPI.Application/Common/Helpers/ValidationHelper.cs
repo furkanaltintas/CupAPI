@@ -1,15 +1,31 @@
-﻿using CupAPI.Application.Common.Responses;
+﻿using CupAPI.Application.Common.Constants;
 using CupAPI.Application.Common.Enums;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CupAPI.Application.Common.Helpers;
 
-public static class ValidationHelper
+public sealed class ValidationHelper(IServiceProvider serviceProvider) : IValidationHelper
 {
-    public static async Task<ApiResponse<object>> ValidateAsync<T>(IValidator<T> validator, T model)
+    public async Task<ApiResponse<TResult>> ValidateAsync<TModel, TResult>(TModel model)
     {
-        var validate = await validator.ValidateAsync(model);
-        if (!validate.IsValid) return ApiResponse<object>.Fail(string.Join(", ", validate.Errors.Select(e => e.ErrorMessage)), ErrorCodeEnum.ValidationError);
-        return ApiResponse<object>.SuccessNoDataResult();
+        var validator = serviceProvider.GetService<IValidator<TModel>>();
+        if (validator is null) return ApiResponse<TResult>.Fail(Messages.ValidatorNotFound, ErrorCodeEnum.ValidationError);
+
+        var result = await validator.ValidateAsync(model);
+
+        if (!result.IsValid)
+        {
+            var errors = string.Join(" | ", result.Errors.Select(e => e.ErrorMessage));
+            return ApiResponse<TResult>.Fail(errors, ErrorCodeEnum.ValidationError);
+        }
+
+        return ApiResponse<TResult>.SuccessNoDataResult();
     }
+}
+
+
+public interface IValidationHelper
+{
+    Task<ApiResponse<TResult>> ValidateAsync<TModel, TResult>(TModel model);
 }

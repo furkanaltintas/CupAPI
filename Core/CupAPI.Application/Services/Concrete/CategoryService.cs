@@ -1,54 +1,45 @@
-﻿using CupAPI.Application.Services.Abstract;
-using CupAPI.Application.Dtos.CategoryDtos;
-using CupAPI.Application.Common.Responses;
+﻿using AutoMapper;
 using CupAPI.Application.Common.Constants;
-using CupAPI.Application.Common.Helpers;
 using CupAPI.Application.Common.Enums;
+using CupAPI.Application.Common.Helpers;
+using CupAPI.Application.Common.Rules.CategoryRules;
+using CupAPI.Application.Common.Services;
+using CupAPI.Application.Dtos.CategoryDtos;
 using CupAPI.Application.Interfaces;
+using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
-using FluentValidation;
-using AutoMapper;
 
 namespace CupAPI.Application.Services.Concrete;
 
 public class CategoryService(
     IGenericRepository<Category> categoryRepository,
     IMapper mapper,
-    IValidator<CreateCategoryDto> createCategoryValidator,
-    IValidator<UpdateCategoryDto> updateCategoryValidator
+    CategoryBusinessRules categoryBusinessRules,
+    UpdateService updateService,
+    CreateService createService
     ) : ICategoryService
 {
-    public async Task<ApiResponse<object>> AddAsync(CreateCategoryDto createCategoryDto)
+    public async Task<ApiResponse<String>> AddAsync(CreateCategoryDto createCategoryDto)
     {
-        try
-        {
-            var response = await ValidationHelper.ValidateAsync(createCategoryValidator, createCategoryDto);
-            if (!response.Success) return response;
-
-            Category category = mapper.Map<Category>(createCategoryDto);
-            await categoryRepository.AddAsync(category);
-            return ApiResponse<object>.SuccessNoDataResult(Messages.Category.Created);
-        }
-        catch
-        {
-            return ApiResponse<object>.Fail(Messages.Category.ErrorWhileAdding, ErrorCodeEnum.Exception);
-        }
+        return await createService.HandleAsync<CreateCategoryDto, Category, String>(
+            dto: createCategoryDto,
+            saveEntity: async entity => await categoryRepository.AddAsync(entity),
+            successMessage: Messages.Category.Created);
     }
 
-    public async Task<ApiResponse<object>> DeleteAsync(int id)
+    public async Task<ApiResponse<String>> DeleteAsync(int id)
     {
         try
         {
-            Category category = await categoryRepository.GetByIdAsync(id);
+            var response = await categoryBusinessRules.CategoryShouldExist(id);
+            if (!response.Success) return ApiResponse<String>.Fail(response.Message, response.ErrorCode);
 
-            if (category is null) return ApiResponse<object>.Fail(Messages.Category.NotFound, ErrorCodeEnum.NotFound);
-
-            await categoryRepository.DeleteAsync(category);
-            return ApiResponse<object>.SuccessNoDataResult(Messages.Category.Deleted);
+            await categoryRepository.DeleteAsync(response.Data!);
+            return ApiResponse<String>.SuccessNoDataResult(Messages.Category.Deleted);
         }
         catch
         {
-            return ApiResponse<object>.Fail(Messages.Category.ErrorWhileDeleting, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.Category.ErrorWhileDeleting, ErrorCodeEnum.Exception);
         }
     }
 
@@ -73,10 +64,10 @@ public class CategoryService(
     {
         try
         {
-            Category? category = await categoryRepository.GetByIdAsync(id);
-            if (category is null) return ApiResponse<DetailCategoryDto>.Fail(Messages.Category.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            var response = await categoryBusinessRules.CategoryShouldExist(id);
+            if (!response.Success) return ApiResponse<DetailCategoryDto>.Fail(response.Message, response.ErrorCode);
 
-            DetailCategoryDto detailCategoryDto = mapper.Map<DetailCategoryDto>(category);
+            DetailCategoryDto detailCategoryDto = mapper.Map<DetailCategoryDto>(response.Data!);
             return ApiResponse<DetailCategoryDto>.SuccessResult(detailCategoryDto);
         }
         catch
@@ -85,24 +76,74 @@ public class CategoryService(
         }
     }
 
-    public async Task<ApiResponse<object>> UpdateAsync(UpdateCategoryDto updateCategoryDto)
+    public async Task<ApiResponse<String>> UpdateAsync(UpdateCategoryDto updateCategoryDto)
     {
-        try
-        {
-            var response = await ValidationHelper.ValidateAsync(updateCategoryValidator, updateCategoryDto);
-            if (!response.Success) return response;
-
-            Category category = await categoryRepository.GetByIdAsync(updateCategoryDto.Id);
-            if (category is null) return ApiResponse<object>.Fail(Messages.Category.ErrorWhileFetching, ErrorCodeEnum.NotFound);
-
-            mapper.Map(updateCategoryDto, category);
-            await categoryRepository.UpdateAsync(category);
-
-            return ApiResponse<object>.SuccessNoDataResult(Messages.Category.Updated);
-        }
-        catch
-        {
-            return ApiResponse<object>.Fail(Messages.Category.ErrorWhileUpdating, ErrorCodeEnum.Exception);
-        }
+        return await updateService.HandleAsync<UpdateCategoryDto, Category, String>(
+            dto: updateCategoryDto,
+            idSelector: u => u.Id,
+            fetchEntity: id => categoryRepository.GetByIdAsync(id),
+            updateEntity: entity => categoryRepository.UpdateAsync(entity),
+            successMessage: Messages.Category.Updated);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// CATEGORY
+
+//try
+//{
+//    var response = await validationHelper.ValidateAsync<CreateCategoryDto, String>(createCategoryDto);
+//    if (!response.Success) return response;
+
+//    Category category = mapper.Map<Category>(createCategoryDto);
+//    await categoryRepository.AddAsync(category);
+//    return ApiResponse<String>.SuccessNoDataResult(Messages.Category.Created);
+//}
+//catch
+//{
+//    return ApiResponse<String>.Fail(Messages.Category.ErrorWhileAdding, ErrorCodeEnum.Exception);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// UPDATE
+
+//try
+//{
+//    var validateResponse = await validationHelper.ValidateAsync<UpdateCategoryDto, String>(updateCategoryDto);
+//    if (!validateResponse.Success) return validateResponse;
+
+//    var businessResponse = await categoryBusinessRules.CategoryShouldExist(updateCategoryDto.Id);
+//    if(!businessResponse.Success) return ApiResponse<String>.Fail(businessResponse.Message, businessResponse.ErrorCode);
+
+//    if (businessResponse.Data is null) return ApiResponse<String>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
+
+//    mapper.Map(updateCategoryDto, businessResponse.Data);
+//    await categoryRepository.UpdateAsync(businessResponse.Data);
+
+//    return ApiResponse<String>.SuccessNoDataResult(Messages.Category.Updated);
+//}
+//catch
+//{
+//    return ApiResponse<String>.Fail(Messages.Category.ErrorWhileUpdating, ErrorCodeEnum.Exception);
+//}

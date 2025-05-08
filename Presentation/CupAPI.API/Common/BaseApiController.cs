@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CupAPI.Application.Common.Responses;
-using CupAPI.Application.Common.Enums;
+﻿using CupAPI.Application.Common.Enums;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CupAPI.API.Controllers.Common;
 

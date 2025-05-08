@@ -2,6 +2,9 @@
 
 public static class Messages
 {
+    public const string EntityNotFound = "Kayıt bulunamadı";
+    public const string ValidatorNotFound = "Validator bulunamadı.";
+
     public static class Category
     {
         public const string NotFound = "Kategori bulunamadı";

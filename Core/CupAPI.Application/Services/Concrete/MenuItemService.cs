@@ -1,13 +1,12 @@
-﻿using CupAPI.Application.Services.Abstract;
-using CupAPI.Application.Dtos.MenuItemDtos;
+﻿using AutoMapper;
 using CupAPI.Application.Common.Constants;
-using CupAPI.Application.Common.Responses;
-using CupAPI.Application.Common.Helpers;
 using CupAPI.Application.Common.Enums;
+using CupAPI.Application.Common.Helpers;
+using CupAPI.Application.Common.Rules.MenuItemRules;
+using CupAPI.Application.Dtos.MenuItemDtos;
 using CupAPI.Application.Interfaces;
+using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
-using FluentValidation;
-using AutoMapper;
 
 namespace CupAPI.Application.Services.Concrete;
 
@@ -15,40 +14,40 @@ public class MenuItemService(
     IGenericRepository<Category> categoryRepository,
     IGenericRepository<MenuItem> menuItemRepository,
     IMapper mapper,
-    IValidator<CreateMenuItemDto> createMenuItemValidator,
-    IValidator<UpdateMenuItemDto> updateMenuItemValidator) : IMenuItemService
+    IValidationHelper validationHelper,
+    MenuItemBusinessRules menuItemBusinessRules) : IMenuItemService
 {
-    public async Task<ApiResponse<object>> AddAsync(CreateMenuItemDto createMenuItemDto)
+    public async Task<ApiResponse<String>> AddAsync(CreateMenuItemDto createMenuItemDto)
     {
         try
         {
-            var response = await ValidationHelper.ValidateAsync(createMenuItemValidator, createMenuItemDto);
+            var response = await validationHelper.ValidateAsync<CreateMenuItemDto, String>(createMenuItemDto);
             if (!response.Success) return response;
 
             MenuItem menuItem = mapper.Map<MenuItem>(createMenuItemDto);
             await menuItemRepository.AddAsync(menuItem);
 
-            return ApiResponse<object>.SuccessNoDataResult(Messages.MenuItem.Created);
+            return ApiResponse<String>.SuccessNoDataResult(Messages.MenuItem.Created);
         }
         catch
         {
-            return ApiResponse<object>.Fail(Messages.MenuItem.ErrorWhileAdding, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.MenuItem.ErrorWhileAdding, ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ApiResponse<object>> DeleteAsync(int id)
+    public async Task<ApiResponse<String>> DeleteAsync(int id)
     {
         try
         {
-            MenuItem menuItem = await menuItemRepository.GetByIdAsync(id);
-            if (menuItem is null) return ApiResponse<object>.Fail(Messages.MenuItem.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            var response = await menuItemBusinessRules.MenuItemShouldExist(id);
+            if (!response.Success) return ApiResponse<String>.Fail(response.Message, response.ErrorCode);
 
-            await menuItemRepository.DeleteAsync(menuItem);
-            return ApiResponse<object>.SuccessNoDataResult(Messages.MenuItem.Deleted);
+            await menuItemRepository.DeleteAsync(response.Data!);
+            return ApiResponse<String>.SuccessNoDataResult(Messages.MenuItem.Deleted);
         }
         catch
         {
-            return ApiResponse<object>.Fail(Messages.MenuItem.ErrorWhileDeleting, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.MenuItem.ErrorWhileDeleting, ErrorCodeEnum.Exception);
         }
     }
 
@@ -74,10 +73,10 @@ public class MenuItemService(
     {
         try
         {
-            MenuItem menuItem = await menuItemRepository.GetByIdAsync(id);
-            if (menuItem is null) return ApiResponse<DetailMenuItemDto>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
+            var response = await menuItemBusinessRules.MenuItemShouldExist(id);
+            if (!response.Success) return ApiResponse<DetailMenuItemDto>.Fail(response.Message, response.ErrorCode);
 
-            DetailMenuItemDto detailMenuItemDto = mapper.Map<DetailMenuItemDto>(menuItem);
+            DetailMenuItemDto detailMenuItemDto = mapper.Map<DetailMenuItemDto>(response.Data!);
             return ApiResponse<DetailMenuItemDto>.SuccessResult(detailMenuItemDto);
         }
         catch
@@ -86,24 +85,26 @@ public class MenuItemService(
         }
     }
 
-    public async Task<ApiResponse<object>> UpdateAsync(UpdateMenuItemDto updateMenuItemDto)
+    public async Task<ApiResponse<String>> UpdateAsync(UpdateMenuItemDto updateMenuItemDto)
     {
         try
         {
-            var response = await ValidationHelper.ValidateAsync(updateMenuItemValidator, updateMenuItemDto);
-            if (!response.Success) return response;
+            var validateResponse = await validationHelper.ValidateAsync<UpdateMenuItemDto, String>(updateMenuItemDto);
+            if (!validateResponse.Success) return validateResponse;
 
-            MenuItem menuItem = await menuItemRepository.GetByIdAsync(updateMenuItemDto.Id);
-            if (menuItem is null) return ApiResponse<object>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
+            var businessResponse = await menuItemBusinessRules.MenuItemShouldExist(updateMenuItemDto.Id);
+            if (!businessResponse.Success) return ApiResponse<String>.Fail(businessResponse.Message, businessResponse.ErrorCode);
 
-            mapper.Map(updateMenuItemDto, menuItem);
-            await menuItemRepository.UpdateAsync(menuItem);
+            if(businessResponse.Data is null) return ApiResponse<String>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
 
-            return ApiResponse<object>.SuccessNoDataResult(Messages.MenuItem.Updated);
+            mapper.Map(updateMenuItemDto, businessResponse.Data);
+            await menuItemRepository.UpdateAsync(businessResponse.Data);
+
+            return ApiResponse<String>.SuccessNoDataResult(Messages.MenuItem.Updated);
         }
         catch
         {
-            return ApiResponse<object>.Fail(Messages.MenuItem.ErrorWhileUpdating, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.MenuItem.ErrorWhileUpdating, ErrorCodeEnum.Exception);
         }
     }
 }
