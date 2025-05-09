@@ -20,6 +20,7 @@ public static class Ioc
         services.AddScoped<ITableService, TableService>();
         services.AddScoped<IValidationHelper, ValidationHelper>();
 
+        services.AddScoped<CreateService>();
         services.AddScoped<UpdateService>();
         services.AddScoped<CategoryBusinessRules>();
         services.AddScoped<MenuItemBusinessRules>();
