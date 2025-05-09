@@ -1,8 +1,7 @@
 ﻿namespace CupAPI.Domain.Entities;
 
-public sealed class Category
+public sealed class Category : BaseEntity
 {
-    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
 
 

@@ -23,7 +23,8 @@ public class CategoryService(
     {
         return await createService.HandleAsync<CreateCategoryDto, Category, String>(
             dto: createCategoryDto,
-            saveEntity: async entity => await categoryRepository.AddAsync(entity),
+            addEntity: async entity => await categoryRepository.AddAsync(entity),
+            saveEntity: async entity => await categoryRepository.SaveChangesAsync(),
             successMessage: Messages.Category.Created);
     }
 
@@ -34,7 +35,8 @@ public class CategoryService(
             var response = await categoryBusinessRules.CategoryShouldExist(id);
             if (!response.Success) return ApiResponse<String>.Fail(response.Message, response.ErrorCode);
 
-            await categoryRepository.DeleteAsync(response.Data!);
+            categoryRepository.Delete(response.Data!);
+            await categoryRepository.SaveChangesAsync();
             return ApiResponse<String>.SuccessNoDataResult(Messages.Category.Deleted);
         }
         catch
@@ -81,8 +83,9 @@ public class CategoryService(
         return await updateService.HandleAsync<UpdateCategoryDto, Category, String>(
             dto: updateCategoryDto,
             idSelector: u => u.Id,
-            fetchEntity: id => categoryRepository.GetByIdAsync(id),
-            updateEntity: entity => categoryRepository.UpdateAsync(entity),
+            fetchEntity: async id => await categoryRepository.GetByIdAsync(id),
+            updateEntity: entity => categoryRepository.Update(entity),
+            saveEntity: async entity => await categoryRepository.SaveChangesAsync(),
             successMessage: Messages.Category.Updated);
     }
 }

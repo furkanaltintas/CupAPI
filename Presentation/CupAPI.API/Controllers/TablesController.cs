@@ -16,7 +16,7 @@ public class TablesController(ITableService tableService) : BaseApiController
     }
 
     [HttpGet("id/{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var response = await tableService.GetByIdAsync(id);
         return HandleResponse(response);

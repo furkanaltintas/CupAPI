@@ -15,7 +15,7 @@ public class MenuItemsController(IMenuItemService menuItemService) : BaseApiCont
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var response = await menuItemService.GetByIdAsync(id);
         return HandleResponse(response);

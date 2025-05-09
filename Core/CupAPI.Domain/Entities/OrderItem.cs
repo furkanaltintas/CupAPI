@@ -1,8 +1,7 @@
 ﻿namespace CupAPI.Domain.Entities;
 
-public sealed class OrderItem
+public sealed class OrderItem : BaseEntity
 {
-    public int Id { get; set; }
     public int OrderId { get; set; }
     public int MenuItemId { get; set; }
     public int Quantity { get; set; }
@@ -10,5 +9,6 @@ public sealed class OrderItem
 
 
     // Navigation properties
-    public MenuItem MenuItem { get; set; } = null!;
+    public MenuItem? MenuItem { get; set; }
+    public Order? Order { get; set; }
 }

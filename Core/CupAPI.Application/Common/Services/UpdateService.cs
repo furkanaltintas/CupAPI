@@ -11,7 +11,8 @@ public class UpdateService(IMapper mapper, IValidationHelper validator)
         TDto dto,
         Func<TDto, int> idSelector,
         Func<int, Task<TEntity>> fetchEntity,
-        Func<TEntity, Task> updateEntity,
+        Action<TEntity> updateEntity,
+        Func<TEntity, Task> saveEntity,
         string successMessage)
         where TDto : class
         where TEntity : class
@@ -23,7 +24,8 @@ public class UpdateService(IMapper mapper, IValidationHelper validator)
         if (entity is null) return ApiResponse<TResult>.Fail(Messages.EntityNotFound, ErrorCodeEnum.NotFound);
 
         mapper.Map(dto, entity);
-        await updateEntity(entity);
+        updateEntity(entity);
+        await saveEntity(entity);
 
         return ApiResponse<TResult>.SuccessNoDataResult(successMessage);
     }

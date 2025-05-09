@@ -27,6 +27,7 @@ public class TableService(
 
             Table table = mapper.Map<Table>(createTableDto);
             await tableRepository.AddAsync(table);
+            await tableRepository.SaveChangesAsync();
             return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Created);
         }
         catch
@@ -42,7 +43,8 @@ public class TableService(
             var response = await tableBusinessRules.TableShouldExist(id);
             if (!response.Success) return ApiResponse<String>.Fail(response.Message, response.ErrorCode);
 
-            await tableRepository.DeleteAsync(response.Data!);
+            tableRepository.Delete(response.Data!);
+            await tableRepository.SaveChangesAsync();
             return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Deleted);
         }
         catch
@@ -145,7 +147,8 @@ public class TableService(
             if (businessResponse.Data is null) return ApiResponse<String>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
 
             mapper.Map(updateTableDto, businessResponse.Data!);
-            await tableRepository.UpdateAsync(businessResponse.Data!);
+            tableRepository.Update(businessResponse.Data!);
+            await tableRepository.SaveChangesAsync();
 
             return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Updated);
         }

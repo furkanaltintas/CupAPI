@@ -1,8 +1,7 @@
 ﻿namespace CupAPI.Domain.Entities;
 
-public sealed class MenuItem
+public sealed class MenuItem : BaseEntity
 {
-    public int Id { get; set; }
     public int CategoryId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -13,4 +12,5 @@ public sealed class MenuItem
 
     // Navigation properties
     public Category Category { get; set; } = null!;
+    public List<OrderItem>? OrderItems { get; set; }
 }

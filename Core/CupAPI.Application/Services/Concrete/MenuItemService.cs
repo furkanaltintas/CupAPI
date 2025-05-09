@@ -26,6 +26,7 @@ public class MenuItemService(
 
             MenuItem menuItem = mapper.Map<MenuItem>(createMenuItemDto);
             await menuItemRepository.AddAsync(menuItem);
+            await menuItemRepository.SaveChangesAsync();
 
             return ApiResponse<String>.SuccessNoDataResult(Messages.MenuItem.Created);
         }
@@ -42,7 +43,8 @@ public class MenuItemService(
             var response = await menuItemBusinessRules.MenuItemShouldExist(id);
             if (!response.Success) return ApiResponse<String>.Fail(response.Message, response.ErrorCode);
 
-            await menuItemRepository.DeleteAsync(response.Data!);
+            menuItemRepository.Delete(response.Data!);
+            await menuItemRepository.SaveChangesAsync();
             return ApiResponse<String>.SuccessNoDataResult(Messages.MenuItem.Deleted);
         }
         catch
@@ -98,7 +100,8 @@ public class MenuItemService(
             if(businessResponse.Data is null) return ApiResponse<String>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
 
             mapper.Map(updateMenuItemDto, businessResponse.Data);
-            await menuItemRepository.UpdateAsync(businessResponse.Data);
+            menuItemRepository.Update(businessResponse.Data);
+            await menuItemRepository.SaveChangesAsync();
 
             return ApiResponse<String>.SuccessNoDataResult(Messages.MenuItem.Updated);
         }

@@ -1,8 +1,7 @@
 ﻿namespace CupAPI.Domain.Entities;
 
-public sealed class User
+public sealed class User : BaseEntity
 {
-    public int Id { get; set; }
     public string AppUserId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Surname { get; set; } = string.Empty;
