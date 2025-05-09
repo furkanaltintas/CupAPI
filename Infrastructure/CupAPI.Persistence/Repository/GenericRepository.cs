@@ -1,15 +1,16 @@
 ﻿using System.Linq.Expressions;
 using CupAPI.Application.Interfaces;
+using CupAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace CupAPI.Persistence.Repository;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
 {
-    private readonly DbContext _context;
+    private readonly AppDbContext _context;
     private readonly DbSet<T> _dbSet;
 
-    public GenericRepository(DbContext context)
+    public GenericRepository(AppDbContext context)
     {
         _context = context;
         _dbSet = context.Set<T>();
