@@ -21,7 +21,5 @@ public sealed class UpdateMenuItemValidator : AbstractValidator<UpdateMenuItemDt
 
         RuleFor(c => c.ImageUrl)
             .NotEmpty().WithMessage("Resim URL'si boş olamaz");
-            //.Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            //.WithMessage("Geçerli bir URL giriniz");
     }
 }

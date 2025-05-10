@@ -11,27 +11,25 @@ namespace CupAPI.Application.Services.Concrete;
 public sealed class OrderItemService(
     IGenericRepository<OrderItem> orderItemRepository,
     IMapper mapper,
-    IValidator<CreateOrderItemDto> createOrderItemValidator) : IOrderItemService
+    IValidator<CreateOrderItemDto> createOrderItemValidator,
+    IValidator<UpdateOrderItemDto> updateOrderItemValidator) : IOrderItemService
 {
     public async Task<ApiResponse<string>> AddAsync(CreateOrderItemDto createOrderItemDto)
     {
         try
         {
             var validate = await createOrderItemValidator.ValidateAsync(createOrderItemDto);
-            if (!validate.IsValid)
-            {
-                return ApiResponse<String>.Fail(string.Join(",", validate.Errors.Select(v => v.ErrorMessage)), ErrorCodeEnum.ValidationError);
-            }
+            if (!validate.IsValid) return ApiResponse<String>.Fail(string.Join(",", validate.Errors.Select(v => v.ErrorMessage)), ErrorCodeEnum.ValidationError);
 
             var orderItem = mapper.Map<OrderItem>(createOrderItemDto);
             await orderItemRepository.AddAsync(orderItem);
             await orderItemRepository.SaveChangesAsync();
 
-            return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Created);
+            return ApiResponse<String>.SuccessNoDataResult(Messages.OrderItem.Created);
         }
         catch
         {
-            return ApiResponse<String>.Fail(Messages.Table.ErrorWhileAdding, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.OrderItem.ErrorWhileAdding, ErrorCodeEnum.Exception);
         }
     }
 
@@ -40,16 +38,16 @@ public sealed class OrderItemService(
         try
         {
             var orderItem = await orderItemRepository.GetByIdAsync(id);
-            if (orderItem is null) return ApiResponse<String>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            if (orderItem is null) return ApiResponse<String>.Fail(Messages.OrderItem.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             orderItemRepository.Delete(orderItem);
             await orderItemRepository.SaveChangesAsync();
 
-            return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Deleted);
+            return ApiResponse<String>.SuccessNoDataResult(Messages.OrderItem.Deleted);
         }
         catch
         {
-            return ApiResponse<String>.Fail(Messages.Table.ErrorWhileDeleting, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.OrderItem.ErrorWhileDeleting, ErrorCodeEnum.Exception);
         }
     }
 
@@ -65,7 +63,7 @@ public sealed class OrderItemService(
         }
         catch
         {
-            return ApiResponse<List<ResultOrderItemDto>>.Fail(Messages.Table.ErrorWhileFetching, Common.Enums.ErrorCodeEnum.Exception);
+            return ApiResponse<List<ResultOrderItemDto>>.Fail(Messages.OrderItem.ErrorWhileFetching, Common.Enums.ErrorCodeEnum.Exception);
         }
     }
 
@@ -74,14 +72,14 @@ public sealed class OrderItemService(
         try
         {
             var orderItem = await orderItemRepository.GetByIdAsync(id);
-            if (orderItem is null) return ApiResponse<DetailOrderItemDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            if (orderItem is null) return ApiResponse<DetailOrderItemDto>.Fail(Messages.OrderItem.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             var detailOrderItemDto = mapper.Map<DetailOrderItemDto>(orderItem);
             return ApiResponse<DetailOrderItemDto>.SuccessResult(detailOrderItemDto);
         }
         catch
         {
-            return ApiResponse<DetailOrderItemDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.Exception);
+            return ApiResponse<DetailOrderItemDto>.Fail(Messages.OrderItem.ErrorWhileFetching, ErrorCodeEnum.Exception);
         }
     }
 
@@ -89,18 +87,21 @@ public sealed class OrderItemService(
     {
         try
         {
+            var validate = await updateOrderItemValidator.ValidateAsync(updateOrderItemDto);
+            if (!validate.IsValid) return ApiResponse<String>.Fail(string.Join(",", validate.Errors.Select(v => v.ErrorMessage)), ErrorCodeEnum.ValidationError);
+
             var orderItem = await orderItemRepository.GetByIdAsync(updateOrderItemDto.Id);
-            if (orderItem is null) return ApiResponse<String>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            if (orderItem is null) return ApiResponse<String>.Fail(Messages.OrderItem.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             mapper.Map(updateOrderItemDto, orderItem);
             orderItemRepository.Update(orderItem);
             await orderItemRepository.SaveChangesAsync();
 
-            return ApiResponse<String>.SuccessNoDataResult(Messages.Table.Updated);
+            return ApiResponse<String>.SuccessNoDataResult(Messages.OrderItem.Updated);
         }
         catch
         {
-            return ApiResponse<String>.Fail(Messages.Table.ErrorWhileUpdating, ErrorCodeEnum.Exception);
+            return ApiResponse<String>.Fail(Messages.OrderItem.ErrorWhileUpdating, ErrorCodeEnum.Exception);
         }
     }
 }

@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CupAPI.Application.Validators.OrderItem;
 
-public sealed class AddOrderItemValidator : AbstractValidator<CreateOrderItemDto>
+public sealed class UpdateOrderItemValidator : AbstractValidator<UpdateOrderItemDto>
 {
-    public AddOrderItemValidator()
+    public UpdateOrderItemValidator()
     {
         RuleFor(o => o.Quantity)
             .NotEmpty().WithMessage("Sipariş adeti boş olamaz")
