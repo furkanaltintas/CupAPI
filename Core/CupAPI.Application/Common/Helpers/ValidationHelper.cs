@@ -10,7 +10,7 @@ public sealed class ValidationHelper(IServiceProvider serviceProvider) : IValida
     public async Task<ApiResponse<TResult>> ValidateAsync<TModel, TResult>(TModel model)
     {
         var validator = serviceProvider.GetService<IValidator<TModel>>();
-        if (validator is null) return ApiResponse<TResult>.Fail(Messages.ValidatorNotFound, ErrorCodeEnum.ValidationError);
+        if (validator is null) return ApiResponse<TResult>.Fail(Messages.General.ValidatorNotFound, ErrorCodeEnum.ValidationError);
 
         var result = await validator.ValidateAsync(model);
 

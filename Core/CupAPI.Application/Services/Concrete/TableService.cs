@@ -58,8 +58,7 @@ public class TableService(
         try
         {
             List<Table> tables = await tableRepository.GetAllAsync();
-
-            if (tables is null || !tables.Any()) return ApiResponse<List<ResultTableDto>>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            if (tables is null || !tables.Any()) return ApiResponse<List<ResultTableDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
             List<ResultTableDto> dtos = mapper.Map<List<ResultTableDto>>(tables);
             return ApiResponse<List<ResultTableDto>>.SuccessResult(dtos);

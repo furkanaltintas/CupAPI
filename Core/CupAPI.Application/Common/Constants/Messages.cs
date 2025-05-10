@@ -2,8 +2,14 @@
 
 public static class Messages
 {
-    public const string EntityNotFound = "Kayıt bulunamadı";
-    public const string ValidatorNotFound = "Validator bulunamadı.";
+    public static class General
+    {
+        public const string UnexpectedErrorOccurred = "Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin."; // (500 - Internal Server Error)
+        public const string DataNotFound = "Kayıt bulunamadı."; // Veri Bulunamadı (404 - NotFound)
+        public const string ValidatorNotFound = "Validator bulunamadı."; // Validasyon Hataları (422)
+        public const string OperationSuccessful = "İşlem başarılı."; // None (200)
+        public const string DataIsEmpty = "Veri mevcut ancak boş."; // Veri boş (200 - Empty List)
+    }
 
     public static class Category
     {
@@ -39,10 +45,5 @@ public static class Messages
         public const string ErrorWhileUpdating = "Masa güncellenirken bir hata oluştu";
         public const string ErrorWhileDeleting = "Masa silinirken bir hata oluştu";
         public const string ErrorWhileFetching = "Masa getirilirken bir hata oluştu";
-    }
-
-    public static class General
-    {
-        public const string UnexpectedError = "Beklenmeyen bir hata oluştu";
     }
 }

@@ -4,17 +4,25 @@ using CupAPI.Application.Common.Enums;
 using CupAPI.Application.Dtos.OrderItemDtos;
 using CupAPI.Application.Interfaces;
 using CupAPI.Domain.Entities;
+using FluentValidation;
 
 namespace CupAPI.Application.Services.Concrete;
 
 public sealed class OrderItemService(
     IGenericRepository<OrderItem> orderItemRepository,
-    IMapper mapper) : IOrderItemService
+    IMapper mapper,
+    IValidator<CreateOrderItemDto> createOrderItemValidator) : IOrderItemService
 {
     public async Task<ApiResponse<string>> AddAsync(CreateOrderItemDto createOrderItemDto)
     {
         try
         {
+            var validate = await createOrderItemValidator.ValidateAsync(createOrderItemDto);
+            if (!validate.IsValid)
+            {
+                return ApiResponse<String>.Fail(string.Join(",", validate.Errors.Select(v => v.ErrorMessage)), ErrorCodeEnum.ValidationError);
+            }
+
             var orderItem = mapper.Map<OrderItem>(createOrderItemDto);
             await orderItemRepository.AddAsync(orderItem);
             await orderItemRepository.SaveChangesAsync();
@@ -50,8 +58,7 @@ public sealed class OrderItemService(
         try
         {
             var orderItems = await orderItemRepository.GetAllAsync();
-
-            if (orderItems is null || !orderItems.Any()) return ApiResponse<List<ResultOrderItemDto>>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            if (orderItems is null || !orderItems.Any()) return ApiResponse<List<ResultOrderItemDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
             var resultOrderItemDtos = mapper.Map<List<ResultOrderItemDto>>(orderItems);
             return ApiResponse<List<ResultOrderItemDto>>.SuccessResult(resultOrderItemDtos);

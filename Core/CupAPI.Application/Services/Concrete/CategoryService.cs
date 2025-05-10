@@ -51,7 +51,7 @@ public class CategoryService(
         {
             List<Category> categories = await categoryRepository.GetAllAsync();
 
-            if (categories is null || !categories.Any()) return ApiResponse<List<ResultCategoryDto>>.Fail(Messages.Category.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            if (categories is null || !categories.Any()) return ApiResponse<List<ResultCategoryDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
             List<ResultCategoryDto> dtos = mapper.Map<List<ResultCategoryDto>>(categories);
             return ApiResponse<List<ResultCategoryDto>>.SuccessResult(dtos);

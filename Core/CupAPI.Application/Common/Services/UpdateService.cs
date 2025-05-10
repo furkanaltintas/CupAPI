@@ -21,7 +21,7 @@ public class UpdateService(IMapper mapper, IValidationHelper validator)
         if (!validateResponse.Success) return validateResponse;
 
         var entity = await fetchEntity(idSelector(dto));
-        if (entity is null) return ApiResponse<TResult>.Fail(Messages.EntityNotFound, ErrorCodeEnum.NotFound);
+        if (entity is null) return ApiResponse<TResult>.Fail(Messages.General.DataNotFound, ErrorCodeEnum.NotFound);
 
         mapper.Map(dto, entity);
         updateEntity(entity);

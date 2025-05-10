@@ -18,7 +18,7 @@ public abstract class BaseApiController : ControllerBase
             ErrorCodeEnum.Unauthorized => Unauthorized(response),
             ErrorCodeEnum.ValidationError => UnprocessableEntity(response),
             ErrorCodeEnum.Conflict => Conflict(response),
-            ErrorCodeEnum.Forbidden => Forbid(),
+            ErrorCodeEnum.Forbidden => StatusCode(403, response),
             _ => StatusCode(500, response)
         };
     }

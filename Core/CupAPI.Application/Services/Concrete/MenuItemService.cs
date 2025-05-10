@@ -60,7 +60,7 @@ public class MenuItemService(
             List<Category> categories = await categoryRepository.GetAllAsync();
             List<MenuItem> menuItems = await menuItemRepository.GetAllAsync();
 
-            if (menuItems is null || !menuItems.Any()) return ApiResponse<List<ResultMenuItemDto>>.Fail(Messages.MenuItem.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+            if (menuItems is null || !menuItems.Any()) return ApiResponse<List<ResultMenuItemDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
             List<ResultMenuItemDto> dtos = mapper.Map<List<ResultMenuItemDto>>(menuItems);
             return ApiResponse<List<ResultMenuItemDto>>.SuccessResult(dtos);
