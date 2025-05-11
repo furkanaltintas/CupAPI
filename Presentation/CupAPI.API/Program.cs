@@ -11,7 +11,6 @@ builder.Services.PersistenceService(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-
 builder.Services.AddEndpointsApiExplorer();
 
 
@@ -27,10 +26,7 @@ app.MapScalarApiReference(opt =>
     opt.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
 });
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

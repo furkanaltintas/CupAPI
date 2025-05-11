@@ -1,13 +1,9 @@
-﻿using CupAPI.Application.Common.DependencyInjection;
-using CupAPI.Application.Common.Helpers;
+﻿using CupAPI.Application.Common.Helpers;
 using CupAPI.Application.Common.Rules;
 using CupAPI.Application.Common.Rules.CategoryRules;
-using CupAPI.Application.Common.Rules.MenuItemRules;
-using CupAPI.Application.Common.Rules.TableRules;
 using CupAPI.Application.Common.Services;
 using CupAPI.Application.Mappings;
 using CupAPI.Application.Services.Abstract;
-using CupAPI.Application.Services.Concrete;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CupAPI.Persistence;
 
-public static class Ioc
+public static class PersistenceServiceRegistration
 {
     public static IServiceCollection PersistenceService(this IServiceCollection services, IConfiguration configuration)
     {
