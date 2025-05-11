@@ -5,7 +5,7 @@ using CupAPI.Domain.Entities;
 
 namespace CupAPI.Application.Common.Rules.TableRules;
 public sealed class TableBusinessRules(
-    IGenericRepository<Table> tableRepository)
+    IGenericRepository<Table> tableRepository) : BusinessRules
 {
     public async Task<ApiResponse<Table>> TableShouldExist(int id)
     {

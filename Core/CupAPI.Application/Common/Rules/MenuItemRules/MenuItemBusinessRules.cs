@@ -5,7 +5,7 @@ using CupAPI.Domain.Entities;
 
 namespace CupAPI.Application.Common.Rules.MenuItemRules;
 
-public class MenuItemBusinessRules(IGenericRepository<MenuItem> menuItemRepository)
+public class MenuItemBusinessRules(IGenericRepository<MenuItem> menuItemRepository) : BusinessRules
 {
     public async Task<ApiResponse<MenuItem>> MenuItemShouldExist(int id)
     {

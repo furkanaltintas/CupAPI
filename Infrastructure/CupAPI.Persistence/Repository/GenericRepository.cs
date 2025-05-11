@@ -21,14 +21,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
         return await _dbSet.FindAsync(new object[] { id }, cancellationToken);
     }
 
-    public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IQueryable<T>>? include = null, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.ToListAsync(cancellationToken);
-    }
+        IQueryable<T> query = AsQueryable();
+        if (predicate is not null) query = query.Where(predicate);
 
-    public async Task<List<T>> WhereAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
-    {
-        return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
+        if (include is not null) query = include(query);
+
+        return await query.ToListAsync(cancellationToken);
     }
 
     public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)

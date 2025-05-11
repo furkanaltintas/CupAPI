@@ -2,7 +2,7 @@
 
 public enum ErrorCodeEnum
 {
-    None = 0, // Veri var ama bu hata değil
+    None = 0, // Boş bir değer gönderilmek istendiğinde
     NotFound = 1,
     BadRequest = 2,
     Unauthorized = 3,
@@ -10,5 +10,5 @@ public enum ErrorCodeEnum
     ValidationError = 5,
     Conflict = 6,
     Forbidden = 7,
-    EmptyData = 8 // Veri bulunamadı ama bu hata değil
+    EmptyData = 8 // Veritabanında veri yok ise kullanılacak
 }

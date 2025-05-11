@@ -57,11 +57,11 @@ public class TableService(
     {
         try
         {
-            List<Table> tables = await tableRepository.GetAllAsync();
+            var tables = await tableRepository.GetAllAsync();
             if (tables is null || !tables.Any()) return ApiResponse<List<ResultTableDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
-            List<ResultTableDto> dtos = mapper.Map<List<ResultTableDto>>(tables);
-            return ApiResponse<List<ResultTableDto>>.SuccessResult(dtos);
+            var resultTableDtos = mapper.Map<List<ResultTableDto>>(tables);
+            return ApiResponse<List<ResultTableDto>>.SuccessResult(resultTableDtos);
         }
         catch
         {
@@ -76,7 +76,7 @@ public class TableService(
             Table? table = await repository.GetByCodeAsync(tableCode);
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
-            DetailTableDto detailTableDto = mapper.Map<DetailTableDto>(table);
+            var detailTableDto = mapper.Map<DetailTableDto>(table);
             return ApiResponse<DetailTableDto>.SuccessResult(detailTableDto);
         }
         catch
@@ -108,7 +108,7 @@ public class TableService(
             Table? table = await repository.GetByNumberAsync(tableNumber);
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
-            DetailTableDto detailTableDto = mapper.Map<DetailTableDto>(table);
+            var detailTableDto = mapper.Map<DetailTableDto>(table);
             return ApiResponse<DetailTableDto>.SuccessResult(detailTableDto);
         }
         catch
@@ -124,7 +124,7 @@ public class TableService(
             Table? table = await repository.GetByTypeAsync(tableType);
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
-            DetailTableDto detailTableDto = mapper.Map<DetailTableDto>(table);
+            var detailTableDto = mapper.Map<DetailTableDto>(table);
             return ApiResponse<DetailTableDto>.SuccessResult(detailTableDto);
         }
         catch

@@ -14,7 +14,7 @@ public sealed class OrderItemService(
     IValidator<CreateOrderItemDto> createOrderItemValidator,
     IValidator<UpdateOrderItemDto> updateOrderItemValidator) : IOrderItemService
 {
-    public async Task<ApiResponse<string>> AddAsync(CreateOrderItemDto createOrderItemDto)
+    public async Task<ApiResponse<String>> AddAsync(CreateOrderItemDto createOrderItemDto)
     {
         try
         {
@@ -33,7 +33,7 @@ public sealed class OrderItemService(
         }
     }
 
-    public async Task<ApiResponse<string>> DeleteAsync(int id)
+    public async Task<ApiResponse<String>> DeleteAsync(int id)
     {
         try
         {
@@ -83,7 +83,7 @@ public sealed class OrderItemService(
         }
     }
 
-    public async Task<ApiResponse<string>> UpdateAsync(UpdateOrderItemDto updateOrderItemDto)
+    public async Task<ApiResponse<String>> UpdateAsync(UpdateOrderItemDto updateOrderItemDto)
     {
         try
         {

@@ -1,8 +1,10 @@
-﻿using CupAPI.Application.Dtos.CategoryDtos;
+﻿using AutoMapper;
+using CupAPI.Application.Dtos.CategoryDtos;
 using CupAPI.Application.Dtos.MenuItemDtos;
+using CupAPI.Application.Dtos.OrderDtos;
+using CupAPI.Application.Dtos.OrderItemDtos;
 using CupAPI.Application.Dtos.TableDtos;
 using CupAPI.Domain.Entities;
-using AutoMapper;
 
 namespace CupAPI.Application.Mappings;
 
@@ -10,19 +12,20 @@ public sealed class GeneralMapping : Profile
 {
     public GeneralMapping()
     {
-        CreateMap<Category, ResultCategoryDto>().ReverseMap();
-        CreateMap<Category, DetailCategoryDto>().ReverseMap();
-        CreateMap<Category, CreateCategoryDto>().ReverseMap();
-        CreateMap<Category, UpdateCategoryDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+        CreateBidirectionalMaps<Category, ResultCategoryDto, DetailCategoryDto, CreateCategoryDto, UpdateCategoryDto>();
+        CreateBidirectionalMaps<MenuItem, ResultMenuItemDto, DetailMenuItemDto, CreateMenuItemDto, UpdateMenuItemDto>();
+        CreateBidirectionalMaps<Table, ResultTableDto, DetailTableDto, CreateTableDto, UpdateTableDto>();
+        CreateBidirectionalMaps<Order, ResultOrderDto, DetailOrderDto, CreateOrderDto, UpdateOrderDto>();
+        CreateBidirectionalMaps<OrderItem, ResultOrderItemDto, DetailOrderItemDto, CreateOrderItemDto, UpdateOrderItemDto>();
+    }
 
-        CreateMap<MenuItem, ResultMenuItemDto>().ReverseMap();
-        CreateMap<MenuItem, DetailMenuItemDto>().ReverseMap();
-        CreateMap<MenuItem, CreateMenuItemDto>().ReverseMap();
-        CreateMap<MenuItem, UpdateMenuItemDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
-
-        CreateMap<Table, ResultTableDto>().ReverseMap();
-        CreateMap<Table, DetailTableDto>().ReverseMap();
-        CreateMap<Table, CreateTableDto>().ReverseMap();
-        CreateMap<Table, UpdateTableDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+    private void CreateBidirectionalMaps<TEntity, TResultDto, TDetailDto, TCreateDto, TUpdateDto>()
+    {
+        CreateMap<TEntity, TResultDto>().ReverseMap();
+        CreateMap<TEntity, TDetailDto>().ReverseMap();
+        CreateMap<TEntity, TCreateDto>().ReverseMap();
+        CreateMap<TEntity, TUpdateDto>()
+            .ReverseMap()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
     }
 }

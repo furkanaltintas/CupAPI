@@ -23,9 +23,3 @@ public sealed class ValidationHelper(IServiceProvider serviceProvider) : IValida
         return ApiResponse<TResult>.SuccessNoDataResult();
     }
 }
-
-
-public interface IValidationHelper
-{
-    Task<ApiResponse<TResult>> ValidateAsync<TModel, TResult>(TModel model);
-}

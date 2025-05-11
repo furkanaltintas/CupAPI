@@ -7,11 +7,11 @@ using CupAPI.Application.Dtos.MenuItemDtos;
 using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CupAPI.Application.Services.Concrete;
 
 public class MenuItemService(
-    IGenericRepository<Category> categoryRepository,
     IGenericRepository<MenuItem> menuItemRepository,
     IMapper mapper,
     IValidationHelper validationHelper,
@@ -24,7 +24,7 @@ public class MenuItemService(
             var response = await validationHelper.ValidateAsync<CreateMenuItemDto, String>(createMenuItemDto);
             if (!response.Success) return response;
 
-            MenuItem menuItem = mapper.Map<MenuItem>(createMenuItemDto);
+            var menuItem = mapper.Map<MenuItem>(createMenuItemDto);
             await menuItemRepository.AddAsync(menuItem);
             await menuItemRepository.SaveChangesAsync();
 
@@ -57,13 +57,11 @@ public class MenuItemService(
     {
         try
         {
-            List<Category> categories = await categoryRepository.GetAllAsync();
-            List<MenuItem> menuItems = await menuItemRepository.GetAllAsync();
-
+            var menuItems = await menuItemRepository.GetAllAsync(include: m => m.Include(m => m.Category));
             if (menuItems is null || !menuItems.Any()) return ApiResponse<List<ResultMenuItemDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
-            List<ResultMenuItemDto> dtos = mapper.Map<List<ResultMenuItemDto>>(menuItems);
-            return ApiResponse<List<ResultMenuItemDto>>.SuccessResult(dtos);
+            var resultMenuItemDtos = mapper.Map<List<ResultMenuItemDto>>(menuItems);
+            return ApiResponse<List<ResultMenuItemDto>>.SuccessResult(resultMenuItemDtos);
         }
         catch
         {
@@ -78,7 +76,7 @@ public class MenuItemService(
             var response = await menuItemBusinessRules.MenuItemShouldExist(id);
             if (!response.Success) return ApiResponse<DetailMenuItemDto>.Fail(response.Message, response.ErrorCode);
 
-            DetailMenuItemDto detailMenuItemDto = mapper.Map<DetailMenuItemDto>(response.Data!);
+            var detailMenuItemDto = mapper.Map<DetailMenuItemDto>(response.Data!);
             return ApiResponse<DetailMenuItemDto>.SuccessResult(detailMenuItemDto);
         }
         catch

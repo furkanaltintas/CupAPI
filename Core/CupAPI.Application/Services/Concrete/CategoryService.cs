@@ -49,12 +49,11 @@ public class CategoryService(
     {
         try
         {
-            List<Category> categories = await categoryRepository.GetAllAsync();
-
+            var categories = await categoryRepository.GetAllAsync();
             if (categories is null || !categories.Any()) return ApiResponse<List<ResultCategoryDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
-            List<ResultCategoryDto> dtos = mapper.Map<List<ResultCategoryDto>>(categories);
-            return ApiResponse<List<ResultCategoryDto>>.SuccessResult(dtos);
+            var resultCategoryDtos = mapper.Map<List<ResultCategoryDto>>(categories);
+            return ApiResponse<List<ResultCategoryDto>>.SuccessResult(resultCategoryDtos);
         }
         catch
         {
@@ -69,7 +68,7 @@ public class CategoryService(
             var response = await categoryBusinessRules.CategoryShouldExist(id);
             if (!response.Success) return ApiResponse<DetailCategoryDto>.Fail(response.Message, response.ErrorCode);
 
-            DetailCategoryDto detailCategoryDto = mapper.Map<DetailCategoryDto>(response.Data!);
+            var detailCategoryDto = mapper.Map<DetailCategoryDto>(response.Data!);
             return ApiResponse<DetailCategoryDto>.SuccessResult(detailCategoryDto);
         }
         catch

@@ -47,6 +47,18 @@ public static class Messages
         public const string ErrorWhileFetching = "Masa getirilirken bir hata oluştu";
     }
 
+    public static class Order
+    {
+        public const string NotFound = "Sipariş bulunamadı";
+        public const string Created = "Sipariş başarıyla oluşturuldu";
+        public const string Updated = "Sipariş başarıyla güncellendi";
+        public const string Deleted = "Sipariş başarıyla silindi";
+        public const string ErrorWhileAdding = "Sipariş eklenirken bir hata oluştu";
+        public const string ErrorWhileUpdating = "Sipariş güncellenirken bir hata oluştu";
+        public const string ErrorWhileDeleting = "Sipariş silinirken bir hata oluştu";
+        public const string ErrorWhileFetching = "Sipariş getirilirken bir hata oluştu";
+    }
+
     public static class OrderItem
     {
         public const string NotFound = "Sipariş kalemi bulunamadı";
@@ -57,6 +69,5 @@ public static class Messages
         public const string ErrorWhileUpdating = "Sipariş kalemi güncellenirken bir hata oluştu";
         public const string ErrorWhileDeleting = "Sipariş kalemi silinirken bir hata oluştu";
         public const string ErrorWhileFetching = "Sipariş kalemi getirilirken bir hata oluştu";
-
     }
 }
