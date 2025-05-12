@@ -2,10 +2,8 @@
 using CupAPI.Application.Common.Constants;
 using CupAPI.Application.Common.Enums;
 using CupAPI.Application.Dtos.OrderDtos;
-using CupAPI.Application.Dtos.OrderItemDtos;
 using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
-using CupAPI.Application.Validators.OrderItem;
 using CupAPI.Domain.Entities;
 using FluentValidation;
 
