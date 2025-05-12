@@ -6,11 +6,13 @@ using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace CupAPI.Application.Services.Concrete;
 
 public class OrderService(
     IGenericRepository<Order> orderRepository,
+    IOrderRepository orderRepository2,
     IMapper mapper,
     IValidator<CreateOrderDto> createOrderValidator,
     IValidator<UpdateOrderDto> updateOrderValidator) : IOrderService
@@ -56,7 +58,7 @@ public class OrderService(
     {
         try
         {
-            var orders = await orderRepository.GetAllAsync();
+            var orders = await orderRepository2.GetAllOrderWithDetailAsync();
             if (orders is null || !orders.Any()) return ApiResponse<List<ResultOrderDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
             var resultOrderDtos = mapper.Map<List<ResultOrderDto>>(orders);
@@ -72,7 +74,7 @@ public class OrderService(
     {
         try
         {
-            var order = await orderRepository.GetByIdAsync(id);
+            var order = await orderRepository2.GetOrderByIdWithDetailAsync(id);
             if (order is null) return ApiResponse<DetailOrderDto>.Fail(Messages.Order.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             var detailOrderDto = mapper.Map<DetailOrderDto>(order);

@@ -8,19 +8,13 @@ public class AddOrderValidator : AbstractValidator<CreateOrderDto>
 {
     public AddOrderValidator()
     {
-        RuleFor(x => x.TotalPrice)
+        RuleFor(o => o.TotalPrice)
             .GreaterThan(0).WithMessage("Toplam tutar 0'dan büyük olmalıdır.");
 
-        RuleFor(x => x.CreatedAt)
-            .NotEmpty().WithMessage("Oluşturulma tarihi boş olamaz.");
-
-        RuleFor(x => x.UpdatedAt)
-            .NotEmpty().WithMessage("Güncellenme tarihi boş olamaz.");
-
-        RuleFor(x => x.OrderItems)
+        RuleFor(o => o.OrderItems)
             .NotNull().WithMessage("Sipariş öğeleri boş olamaz.")
-            .Must(x => x.Count > 0).WithMessage("En az bir sipariş öğesi eklenmelidir.");
+            .Must(o => o.Count > 0).WithMessage("En az bir sipariş öğesi eklenmelidir.");
 
-        RuleForEach(x => x.OrderItems).SetValidator(new AddOrderItemValidator());
+        RuleForEach(o => o.OrderItems).SetValidator(new AddOrderItemValidator());
     }
 }

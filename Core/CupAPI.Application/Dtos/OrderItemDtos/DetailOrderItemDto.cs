@@ -12,5 +12,5 @@ public sealed class DetailOrderItemDto
 
 
     // Navigation properties
-    public DetailMenuItemDto MenuItem { get; set; }
+    public DetailMenuItemDto? MenuItem { get; set; }
 }
