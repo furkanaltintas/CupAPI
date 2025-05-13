@@ -12,5 +12,4 @@ public sealed class MenuItem : BaseEntity
 
     // Navigation properties
     public Category Category { get; set; } = null!;
-    public List<OrderItem>? OrderItems { get; set; }
 }

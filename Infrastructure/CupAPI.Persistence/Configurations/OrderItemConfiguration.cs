@@ -36,11 +36,11 @@ public sealed class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .IsRequired()
             .HasColumnType("decimal(10,2)");
 
-        builder
-            .HasOne(oi => oi.MenuItem)
-            .WithMany(m => m.OrderItems)
-            .HasForeignKey(oi => oi.MenuItemId)
-            .OnDelete(DeleteBehavior.Restrict);
+        //builder
+        //    .HasOne(oi => oi.MenuItem)
+        //    .WithMany(m => m.OrderItems)
+        //    .HasForeignKey(oi => oi.MenuItemId)
+        //    .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasOne(oi => oi.Order)

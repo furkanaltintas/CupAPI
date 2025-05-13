@@ -8,9 +8,6 @@ public class AddOrderValidator : AbstractValidator<CreateOrderDto>
 {
     public AddOrderValidator()
     {
-        RuleFor(o => o.TotalPrice)
-            .GreaterThan(0).WithMessage("Toplam tutar 0'dan büyük olmalıdır.");
-
         RuleFor(o => o.OrderItems)
             .NotNull().WithMessage("Sipariş öğeleri boş olamaz.")
             .Must(o => o.Count > 0).WithMessage("En az bir sipariş öğesi eklenmelidir.");

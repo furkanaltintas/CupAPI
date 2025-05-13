@@ -9,5 +9,6 @@ namespace CupAPI.Application.Services.Abstract
         Task<ApiResponse<String>> AddAsync(CreateOrderDto createOrderDto);
         Task<ApiResponse<String>> UpdateAsync(UpdateOrderDto updateOrderDto);
         Task<ApiResponse<String>> DeleteAsync(int id);
+        Task<ApiResponse<String>> ChangeOrderStatusAsync(ChangeOrderStatusDto changeOrderStatusDto);
     }
 }

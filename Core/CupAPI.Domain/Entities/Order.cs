@@ -11,4 +11,5 @@ public sealed class Order : BaseEntity
 
     // Navigation properties
     public List<OrderItem>? OrderItems { get; set; }
+    public Table? Table { get; set; }
 }

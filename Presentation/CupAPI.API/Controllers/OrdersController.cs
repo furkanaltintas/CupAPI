@@ -28,6 +28,13 @@ public class OrdersController(IOrderService orderService) : BaseApiController
         return HandleResponse(response);
     }
 
+    [HttpPost("changeOrderStatus")]
+    public async Task<IActionResult> ChangeOrderStatus(ChangeOrderStatusDto changeOrderStatusDto)
+    {
+        var response = await orderService.ChangeOrderStatusAsync(changeOrderStatusDto);
+        return HandleResponse(response);
+    }
+
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateOrderDto updateOrderDto)
     {
