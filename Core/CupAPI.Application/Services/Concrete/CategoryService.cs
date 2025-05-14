@@ -8,6 +8,7 @@ using CupAPI.Application.Dtos.CategoryDtos;
 using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CupAPI.Application.Services.Concrete;
 
@@ -74,6 +75,22 @@ public class CategoryService(
         catch
         {
             return ApiResponse<DetailCategoryDto>.Fail(Messages.Category.ErrorWhileFetching, ErrorCodeEnum.Exception);
+        }
+    }
+
+    public async Task<ApiResponse<List<ResultCategoriesWithMenuDto>>> GetCategoriesWithMenuItemAsync()
+    {
+        try
+        {
+            var categories = await categoryRepository.GetAllAsync(include: c => c.Include(c => c.MenuItems));
+            if (categories is null || !categories.Any()) return ApiResponse<List<ResultCategoriesWithMenuDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
+
+            var resultCategoryDtos = mapper.Map<List<ResultCategoriesWithMenuDto>>(categories);
+            return ApiResponse<List<ResultCategoriesWithMenuDto>>.SuccessResult(resultCategoryDtos);
+        }
+        catch
+        {
+            return ApiResponse<List<ResultCategoriesWithMenuDto>>.Fail(Messages.Category.ErrorWhileFetching, ErrorCodeEnum.Exception);
         }
     }
 

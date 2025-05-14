@@ -17,6 +17,9 @@ public sealed class GeneralMapping : Profile
         CreateBidirectionalMaps<Table, ResultTableDto, DetailTableDto, CreateTableDto, UpdateTableDto>();
         CreateBidirectionalMaps<Order, ResultOrderDto, DetailOrderDto, CreateOrderDto, UpdateOrderDto>();
         CreateBidirectionalMaps<OrderItem, ResultOrderItemDto, DetailOrderItemDto, CreateOrderItemDto, UpdateOrderItemDto>();
+
+        CreateMap<MenuItem, CategoriesMenuItemDto>().ReverseMap();
+        CreateMap<Category, ResultCategoriesWithMenuDto>().ReverseMap();
     }
 
     private void CreateBidirectionalMaps<TEntity, TResultDto, TDetailDto, TCreateDto, TUpdateDto>()

@@ -14,6 +14,13 @@ public class CategoriesController(ICategoryService categoryService) : BaseApiCon
         return HandleResponse(response);
     }
 
+    [HttpGet("getAllCategoriesWithMenuItems")]
+    public async Task<IActionResult> GetAllCategoriesWithMenuItems()
+    {
+        var response = await categoryService.GetCategoriesWithMenuItemAsync();
+        return HandleResponse(response);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
