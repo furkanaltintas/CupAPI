@@ -36,9 +36,15 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
         return await _dbSet.AnyAsync(predicate, cancellationToken);
     }
 
-    public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
+    public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
+        IQueryable<T> query = AsQueryable();
+        query = query.Where(predicate);
+
+        if(include is not null) query = include(query);
+
+        return await query.FirstOrDefaultAsync(cancellationToken);
+
     }
 
     public async Task AddAsync(T entity, CancellationToken cancellationToken = default)

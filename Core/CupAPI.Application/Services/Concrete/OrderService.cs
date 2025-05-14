@@ -6,6 +6,7 @@ using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace CupAPI.Application.Services.Concrete;
 
@@ -57,6 +58,37 @@ public class OrderService(
         {
             return ApiResponse<String>.Fail(Messages.Order.ErrorWhileAdding, ErrorCodeEnum.Exception);
         }
+    }
+
+    public async Task<ApiResponse<String>> UpdateOrderWithItemAsync(AddOrderItemToOrderDto addOrderItemToOrderDto)
+    {
+        var order = await orderRepository.FirstOrDefaultAsync(
+            o => o.Id == addOrderItemToOrderDto.OrderId,
+            o => o.Include(o => o.OrderItems));
+
+        if (order is null) return ApiResponse<String>.Fail(Messages.Order.ErrorWhileFetching, ErrorCodeEnum.NotFound);
+
+        var newOrderItem = mapper.Map<OrderItem>(addOrderItemToOrderDto.OrderItem);
+
+        var existingOrderItem = order.OrderItems
+            .FirstOrDefault(o => o.MenuItemId == newOrderItem.MenuItemId);
+
+        if(existingOrderItem is not null)
+        {
+            // Eğer aynı ürün varsa miktarı arttırıyoruz
+            existingOrderItem.Quantity += newOrderItem.Quantity;
+            order.TotalPrice = order.OrderItems.Sum(o => o.TotalPrice);
+        }
+        else
+        {
+            order.OrderItems.Add(newOrderItem);
+            order.TotalPrice = order.OrderItems.Sum(o => o.TotalPrice);
+        }
+
+        orderRepository.Update(order);
+        await orderRepository.SaveChangesAsync();
+
+        return ApiResponse<String>.SuccessNoDataResult(Messages.Order.Updated);
     }
 
     public async Task<ApiResponse<String>> ChangeOrderStatusAsync(ChangeOrderStatusDto changeOrderStatusDto)

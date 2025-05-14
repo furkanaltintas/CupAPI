@@ -42,6 +42,13 @@ public class OrdersController(IOrderService orderService) : BaseApiController
         return HandleResponse(response);
     }
 
+    [HttpPut("addOrderItemByOrder")]
+    public async Task<IActionResult> AddOrderItemByOrder(AddOrderItemToOrderDto addOrderItemToOrderDto)
+    {
+        var response = await orderService.UpdateOrderWithItemAsync(addOrderItemToOrderDto);
+        return HandleResponse(response);
+    }
+
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
