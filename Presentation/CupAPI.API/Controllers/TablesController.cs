@@ -46,7 +46,7 @@ public class TablesController(ITableService tableService) : BaseApiController
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateTableDto createTableDto)
     {
-        var response =  await tableService.AddAsync(createTableDto);
+        var response = await tableService.AddAsync(createTableDto);
         return HandleResponse(response);
     }
 

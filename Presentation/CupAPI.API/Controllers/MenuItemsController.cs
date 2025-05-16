@@ -24,7 +24,7 @@ public class MenuItemsController(IMenuItemService menuItemService) : BaseApiCont
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateMenuItemDto createMenuItemDto)
     {
-        var response =  await menuItemService.AddAsync(createMenuItemDto);
+        var response = await menuItemService.AddAsync(createMenuItemDto);
         return HandleResponse(response);
     }
 

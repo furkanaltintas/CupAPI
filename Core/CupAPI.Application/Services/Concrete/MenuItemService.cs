@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CupAPI.Application.Services.Concrete;
 
 public class MenuItemService(
-    IGenericRepository<MenuItem> menuItemRepository,
+    IMenuItemRepository menuItemRepository,
     IMapper mapper,
     IValidationHelper validationHelper,
     MenuItemBusinessRules menuItemBusinessRules) : IMenuItemService
@@ -95,7 +95,7 @@ public class MenuItemService(
             var businessResponse = await menuItemBusinessRules.MenuItemShouldExist(updateMenuItemDto.Id);
             if (!businessResponse.Success) return ApiResponse<String>.Fail(businessResponse.Message, businessResponse.ErrorCode);
 
-            if(businessResponse.Data is null) return ApiResponse<String>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
+            if (businessResponse.Data is null) return ApiResponse<String>.Fail(Messages.MenuItem.NotFound, ErrorCodeEnum.NotFound);
 
             mapper.Map(updateMenuItemDto, businessResponse.Data);
             menuItemRepository.Update(businessResponse.Data);

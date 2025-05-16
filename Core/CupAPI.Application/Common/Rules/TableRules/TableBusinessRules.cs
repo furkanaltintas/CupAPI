@@ -11,7 +11,7 @@ public sealed class TableBusinessRules(
     {
         var table = await tableRepository.GetByIdAsync(id);
 
-        if(table is null)
+        if (table is null)
             return ApiResponse<Table>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
         return ApiResponse<Table>.SuccessResult(table);
     }

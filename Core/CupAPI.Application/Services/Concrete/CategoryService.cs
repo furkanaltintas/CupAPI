@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CupAPI.Application.Common.Constants;
 using CupAPI.Application.Common.Enums;
-using CupAPI.Application.Common.Helpers;
 using CupAPI.Application.Common.Rules.CategoryRules;
 using CupAPI.Application.Common.Services;
 using CupAPI.Application.Dtos.CategoryDtos;

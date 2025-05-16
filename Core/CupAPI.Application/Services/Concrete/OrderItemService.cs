@@ -9,7 +9,7 @@ using FluentValidation;
 namespace CupAPI.Application.Services.Concrete;
 
 public sealed class OrderItemService(
-    IGenericRepository<OrderItem> orderItemRepository,
+    IOrderItemRepository orderItemRepository,
     IMapper mapper,
     IValidator<CreateOrderItemDto> createOrderItemValidator,
     IValidator<UpdateOrderItemDto> updateOrderItemValidator) : IOrderItemService

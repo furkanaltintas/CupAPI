@@ -15,7 +15,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         modelBuilder.AddGlobalQueryFilters(); // soft delete filtrelemesi
-        
+
     }
 
     #region DbSets

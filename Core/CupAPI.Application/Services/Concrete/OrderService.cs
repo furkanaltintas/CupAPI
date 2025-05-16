@@ -5,15 +5,14 @@ using CupAPI.Application.Dtos.OrderDtos;
 using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
+using CupAPI.Domain.Enums;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace CupAPI.Application.Services.Concrete;
 
 public class OrderService(
-    IGenericRepository<Order> orderRepository,
-    IOrderRepository orderRepository2,
-    IGenericRepository<MenuItem> menuItemRepository,
+    IUnitOfWork unitOfWork,
     IMapper mapper,
     IValidator<CreateOrderDto> createOrderValidator,
     IValidator<UpdateOrderDto> updateOrderValidator) : IOrderService
@@ -25,7 +24,7 @@ public class OrderService(
             var validate = await createOrderValidator.ValidateAsync(createOrderDto);
             if (!validate.IsValid) return ApiResponse<String>.Fail(string.Join(",", validate.Errors.Select(v => v.ErrorMessage)), ErrorCodeEnum.ValidationError);
 
-            var menuItems = await menuItemRepository.GetAllAsync(m => createOrderDto.OrderItems.Select(o => o.MenuItemId).Contains(m.Id));
+            var menuItems = await unitOfWork.MenuItems.GetAllAsync(m => createOrderDto.OrderItems.Select(o => o.MenuItemId).Contains(m.Id));
 
             var orderItems = createOrderDto.OrderItems.Select(item =>
             {
@@ -48,9 +47,13 @@ public class OrderService(
                 OrderItems = orderItems
             };
 
-            //var order = mapper.Map<Order>(createOrderDto);
-            await orderRepository.AddAsync(order);
-            await orderRepository.SaveChangesAsync();
+            var table = await unitOfWork.Tables.GetByIdAsync(order.TableId);
+            table.IsActive = false;
+
+            await unitOfWork.Orders.AddAsync(order);
+            unitOfWork.Tables.Update(table);
+
+            await unitOfWork.Orders.SaveChangesAsync();
 
             return ApiResponse<String>.SuccessNoDataResult(Messages.Order.Created);
         }
@@ -62,7 +65,7 @@ public class OrderService(
 
     public async Task<ApiResponse<String>> UpdateOrderWithItemAsync(AddOrderItemToOrderDto addOrderItemToOrderDto)
     {
-        var order = await orderRepository.FirstOrDefaultAsync(
+        var order = await unitOfWork.Orders.FirstOrDefaultAsync(
             o => o.Id == addOrderItemToOrderDto.OrderId,
             o => o.Include(o => o.OrderItems));
 
@@ -73,7 +76,7 @@ public class OrderService(
         var existingOrderItem = order.OrderItems
             .FirstOrDefault(o => o.MenuItemId == newOrderItem.MenuItemId);
 
-        if(existingOrderItem is not null)
+        if (existingOrderItem is not null)
         {
             // Eğer aynı ürün varsa miktarı arttırıyoruz
             existingOrderItem.Quantity += newOrderItem.Quantity;
@@ -85,8 +88,8 @@ public class OrderService(
             order.TotalPrice = order.OrderItems.Sum(o => o.TotalPrice);
         }
 
-        orderRepository.Update(order);
-        await orderRepository.SaveChangesAsync();
+        unitOfWork.Orders.Update(order);
+        await unitOfWork.Orders.SaveChangesAsync();
 
         return ApiResponse<String>.SuccessNoDataResult(Messages.Order.Updated);
     }
@@ -95,13 +98,20 @@ public class OrderService(
     {
         try
         {
-            var order = await orderRepository.GetByIdAsync(changeOrderStatusDto.OrderId);
+            var order = await unitOfWork.Orders.GetByIdAsync(changeOrderStatusDto.OrderId);
             if (order is null) return ApiResponse<String>.Fail(Messages.Order.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
-            // order.Status = changeOrderStatusDto.NewStatus;
             mapper.Map(changeOrderStatusDto, order);
-            orderRepository.Update(order);
-            await orderRepository.SaveChangesAsync();
+            unitOfWork.Orders.Update(order);
+
+            if (changeOrderStatusDto.NewStatus == OrderType.Completed)
+            {
+                var table = await unitOfWork.Tables.GetByIdAsync(order.TableId);
+                table.IsActive = true;
+                unitOfWork.Tables.Update(table);
+            }
+
+            await unitOfWork.Orders.SaveChangesAsync();
             return ApiResponse<string>.SuccessNoDataResult(Messages.Order.Updated);
         }
         catch
@@ -114,11 +124,11 @@ public class OrderService(
     {
         try
         {
-            var order = await orderRepository.GetByIdAsync(id);
+            var order = await unitOfWork.Orders.GetByIdAsync(id);
             if (order is null) return ApiResponse<String>.Fail(Messages.Order.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
-            orderRepository.Delete(order);
-            await orderRepository.SaveChangesAsync();
+            unitOfWork.Orders.Delete(order);
+            await unitOfWork.Orders.SaveChangesAsync();
 
             return ApiResponse<String>.SuccessNoDataResult(Messages.Order.Deleted);
         }
@@ -132,7 +142,7 @@ public class OrderService(
     {
         try
         {
-            var orders = await orderRepository2.GetAllOrderWithDetailAsync();
+            var orders = await unitOfWork.Orders.GetAllOrderWithDetailAsync();
             if (orders is null || !orders.Any()) return ApiResponse<List<ResultOrderDto>>.SuccessEmptyDataResult(new(), Messages.General.DataIsEmpty, ErrorCodeEnum.EmptyData);
 
             var resultOrderDtos = mapper.Map<List<ResultOrderDto>>(orders);
@@ -148,7 +158,7 @@ public class OrderService(
     {
         try
         {
-            var order = await orderRepository2.GetOrderByIdWithDetailAsync(id);
+            var order = await unitOfWork.Orders.GetOrderByIdWithDetailAsync(id);
             if (order is null) return ApiResponse<DetailOrderDto>.Fail(Messages.Order.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             var detailOrderDto = mapper.Map<DetailOrderDto>(order);
@@ -167,12 +177,12 @@ public class OrderService(
             var validate = await updateOrderValidator.ValidateAsync(updateOrderDto);
             if (!validate.IsValid) return ApiResponse<String>.Fail(string.Join(",", validate.Errors.Select(v => v.ErrorMessage)), ErrorCodeEnum.ValidationError);
 
-            var order = await orderRepository.GetByIdAsync(updateOrderDto.Id);
+            var order = await unitOfWork.Orders.GetByIdAsync(updateOrderDto.Id);
             if (order is null) return ApiResponse<String>.Fail(Messages.Order.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             mapper.Map(updateOrderDto, order);
-            orderRepository.Update(order);
-            await orderRepository.SaveChangesAsync();
+            unitOfWork.Orders.Update(order);
+            await unitOfWork.Orders.SaveChangesAsync();
 
             return ApiResponse<String>.SuccessNoDataResult(Messages.Order.Updated);
         }

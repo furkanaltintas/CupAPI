@@ -7,8 +7,8 @@ namespace CupAPI.Persistence.Repository;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
 {
-    private readonly AppDbContext _context;
-    private readonly DbSet<T> _dbSet;
+    protected readonly AppDbContext _context;
+    protected readonly DbSet<T> _dbSet;
 
     public GenericRepository(AppDbContext context)
     {
@@ -41,7 +41,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
         IQueryable<T> query = AsQueryable();
         query = query.Where(predicate);
 
-        if(include is not null) query = include(query);
+        if (include is not null) query = include(query);
 
         return await query.FirstOrDefaultAsync(cancellationToken);
 

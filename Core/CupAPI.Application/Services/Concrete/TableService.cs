@@ -12,8 +12,7 @@ using CupAPI.Domain.Enums;
 namespace CupAPI.Application.Services.Concrete;
 
 public class TableService(
-    IGenericRepository<Table> tableRepository,
-    ITableRepository repository,
+    ITableRepository tableRepository,
     IMapper mapper,
     IValidationHelper validationHelper,
     TableBusinessRules tableBusinessRules) : ITableService
@@ -73,7 +72,7 @@ public class TableService(
     {
         try
         {
-            Table? table = await repository.GetByCodeAsync(tableCode);
+            Table? table = await tableRepository.GetByCodeAsync(tableCode);
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             var detailTableDto = mapper.Map<DetailTableDto>(table);
@@ -105,7 +104,7 @@ public class TableService(
     {
         try
         {
-            Table? table = await repository.GetByNumberAsync(tableNumber);
+            Table? table = await tableRepository.GetByNumberAsync(tableNumber);
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             var detailTableDto = mapper.Map<DetailTableDto>(table);
@@ -121,7 +120,7 @@ public class TableService(
     {
         try
         {
-            Table? table = await repository.GetByTypeAsync(tableType);
+            Table? table = await tableRepository.GetByTypeAsync(tableType);
             if (table is null) return ApiResponse<DetailTableDto>.Fail(Messages.Table.ErrorWhileFetching, ErrorCodeEnum.NotFound);
 
             var detailTableDto = mapper.Map<DetailTableDto>(table);

@@ -14,9 +14,16 @@ public static class PersistenceServiceRegistration
         services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        // UnitOfWork
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        // Repositories
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IMenuItemRepository, MenuItemRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOrderItemRepository, OrderItemRepository>();
         services.AddScoped<ITableRepository, TableRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
