@@ -24,6 +24,7 @@ public static class ApplicationServiceRegistration
         //    .WithScopedLifetime()); // Bu sınıfları Scoped yaşam süresiyle kaydet
 
         services
+            .AddScoped<IAuthService, AuthService>()
             .AddScoped<ICategoryService, CategoryService>()
             .AddScoped<IMenuItemService, MenuItemService>()
             .AddScoped<IOrderService, OrderService>()
@@ -39,7 +40,8 @@ public static class ApplicationServiceRegistration
 
         services
             .AddScoped<CreateService>()
-            .AddScoped<UpdateService>();
+            .AddScoped<UpdateService>()
+            .AddScoped<TokenHelper>();
 
         services
             .AddScoped<IValidationHelper, ValidationHelper>()

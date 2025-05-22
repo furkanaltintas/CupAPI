@@ -5,7 +5,7 @@ using CupAPI.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CupAPI.Application.Common.Rules.CategoryRules;
-public sealed class CategoryBusinessRules(IGenericRepository<Category> categoryRepository) : BusinessRules
+public sealed class CategoryBusinessRules(ICategoryRepository categoryRepository) : BusinessRules
 {
     public async Task<ApiResponse<Category>> CategoryShouldExist(int id)
     {

@@ -7,8 +7,16 @@ public static class Messages
         public const string UnexpectedErrorOccurred = "Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin."; // (500 - Internal Server Error)
         public const string DataNotFound = "Kayıt bulunamadı."; // Veri Bulunamadı (404 - NotFound)
         public const string ValidatorNotFound = "Validator bulunamadı."; // Validasyon Hataları (422)
+        public const string InvalidParameter = "Geçersiz parametre gönderildi."; // Validation (400)
         public const string OperationSuccessful = "İşlem başarılı."; // None (200)
         public const string DataIsEmpty = "Veri mevcut ancak boş."; // Veri boş (200 - Empty List)
+    }
+
+    public static class Auth
+    {
+        public const string EmailCannotBeEmpty = "Email adresi boş olamaz";
+        public const string TokenGenerationFailed = "Token üretimi sırasında bir güvenlik hatası oluştu.";
+        public const string TokenCreated = "Token başarıyla üretildi";
     }
 
     public static class Category

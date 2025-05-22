@@ -1,9 +1,11 @@
 ﻿using CupAPI.Application.Common.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CupAPI.API.Controllers.Common;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {

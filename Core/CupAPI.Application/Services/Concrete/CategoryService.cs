@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CupAPI.Application.Services.Concrete;
 
 public class CategoryService(
-    IGenericRepository<Category> categoryRepository,
+    ICategoryRepository categoryRepository,
     IMapper mapper,
     CategoryBusinessRules categoryBusinessRules,
     UpdateService updateService,
