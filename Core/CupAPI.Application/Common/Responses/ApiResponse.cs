@@ -26,7 +26,7 @@ public sealed record ApiResponse<T>(
             ErrorCodeEnum.None.ToString()            // Hata kodu mesajı boş
         );
 
-    public static ApiResponse<T> SuccessEmptyDataResult(T data, string message = Messages.General.OperationSuccessful, ErrorCodeEnum errorCode = ErrorCodeEnum.EmptyData)
+    public static ApiResponse<T> SuccessEmptyDataResult(T data, string message = Messages.General.DataIsEmpty, ErrorCodeEnum errorCode = ErrorCodeEnum.EmptyData)
         => new(
             true,                                   // İşlem başarılı ancak veri boş
             message,                                // Başarı mesajı
