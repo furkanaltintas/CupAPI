@@ -1,31 +1,28 @@
-﻿using CupAPI.Application.Dtos.UserDtos;
-using CupAPI.Application.Interfaces;
+﻿using CupAPI.Application.Interfaces;
 using CupAPI.Domain.Entities;
 using CupAPI.Persistence.Context;
-using CupAPI.Persistence.Context.Identity;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
-namespace CupAPI.Persistence.Repository
+namespace CupAPI.Persistence.Repository;
+
+public class UserRepository : GenericRepository<User>, IUserRepository
 {
-    public class UserRepository : GenericRepository<User>, IUserRepository
+    public UserRepository(AppDbContext context) : base(context) { }
+
+    public async Task AddAsync(User user)
+    {          
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<User?> GetByEmailAsync(string email)
     {
-        private readonly UserManager<AppIdentityUser> _userManager;
-        private readonly SignInManager<AppIdentityUser> _signInManager;
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+    }
 
-        public UserRepository(AppDbContext context, UserManager<AppIdentityUser> userManager, SignInManager<AppIdentityUser> signInManager) : base(context)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
-
-        public async Task<SignInResult> LoginAsync(LoginDto loginDto, AppIdentityUser user)
-        {
-            return await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-        }
-
-        public async Task LogoutAsync()
-        {
-            await _signInManager.SignOutAsync();
-        }
+    public async Task<bool> ExistsByEmailAsync(string email)
+    {
+        return await _context.Users
+            .AnyAsync(u => u.Email.ToLower() == email.ToLower());
     }
 }
