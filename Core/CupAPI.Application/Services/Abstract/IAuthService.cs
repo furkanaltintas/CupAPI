@@ -1,11 +1,11 @@
 ﻿using CupAPI.Application.Dtos.AuthDtos;
-using CupAPI.Application.Dtos.UserDtos;
+using CupAPI.Domain.Entities;
 
 namespace CupAPI.Application.Services.Abstract;
 
 public interface IAuthService
 {
-    Task<ApiResponse<String>> GenerateToken(TokenDto tokenDto);
-    Task<ApiResponse<String>> LoginAsync(LoginDto loginDto);
-    Task<ApiResponse<String>> LogoutAsync();
+    Task<TokenResponseDto> RegisterAsync(RegisterDto dto);
+    Task<TokenResponseDto> LoginAsync(LoginDto dto);
+    Task<TokenResponseDto> GenerateTokenAsync(User user);
 }

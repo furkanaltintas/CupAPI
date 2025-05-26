@@ -1,24 +1,28 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using CupAPI.Application.Common.Helpers.Jwt.Abstract;
 using CupAPI.Application.Dtos.AuthDtos;
+using CupAPI.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CupAPI.Application.Common.Helpers;
+namespace CupAPI.Application.Common.Helpers.Jwt.Concrete;
 
-public sealed class TokenHelper(IConfiguration configuration)
+public sealed class JwtService(IConfiguration configuration) : IJwtService
 {
-    public async Task<String> GenerateToken(TokenDto tokenDto)
+    public TokenResponseDto CreateToken(User user)
     {
         SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
         SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256);
 
+        DateTime expires = DateTime.UtcNow.AddHours(2);
+
         Claim[] claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, tokenDto.Id),
-            new Claim(ClaimTypes.Email, tokenDto.Email),
-            new Claim(ClaimTypes.Role, tokenDto.Role),
+            new Claim(ClaimTypes.NameIdentifier, user.AppUserId),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
@@ -26,11 +30,14 @@ public sealed class TokenHelper(IConfiguration configuration)
             issuer: configuration["Jwt:Issuer"],
             audience: configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(60),
+            expires: expires,
             signingCredentials: credentials
             );
 
-        String resultToken = new JwtSecurityTokenHandler().WriteToken(token);
-        return resultToken;
+        return new TokenResponseDto
+        {
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+            Expiration = expires
+        };
     }
 }

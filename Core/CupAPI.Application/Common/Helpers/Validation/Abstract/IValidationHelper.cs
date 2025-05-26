@@ -1,4 +1,4 @@
-﻿namespace CupAPI.Application.Common.Helpers;
+﻿namespace CupAPI.Application.Common.Helpers.Validation.Abstract;
 
 public interface IValidationHelper
 {

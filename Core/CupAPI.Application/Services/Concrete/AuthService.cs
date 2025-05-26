@@ -1,61 +1,48 @@
-﻿using CupAPI.Application.Common.Constants;
-using CupAPI.Application.Common.Enums;
-using CupAPI.Application.Common.Helpers;
+﻿using CupAPI.Application.Common.Helpers.Jwt.Abstract;
+using CupAPI.Application.Common.Helpers.PasswordHasher.Abstract;
 using CupAPI.Application.Dtos.AuthDtos;
-using CupAPI.Application.Dtos.UserDtos;
 using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CupAPI.Application.Services.Concrete;
 
 public sealed class AuthService(
-    TokenHelper tokenHelper,
-    IUserRepository userRepository,
-    UserManager<User> userManager) : IAuthService
+    IUserRepository userRepository, IJwtService jwtService, IPasswordHasher passwordHasher) : IAuthService
 {
-    public async Task<ApiResponse<string>> GenerateToken(TokenDto tokenDto)
+    public Task<TokenResponseDto> GenerateTokenAsync(User user)
     {
-        if (string.IsNullOrWhiteSpace(tokenDto.Email)) return ApiResponse<String>.Fail(Messages.Auth.EmailCannotBeEmpty, ErrorCodeEnum.ValidationError);
-
-        try
-        {
-            String token = await tokenHelper.GenerateToken(tokenDto);
-            return ApiResponse<String>.SuccessResult(token, Messages.Auth.TokenCreated);
-        }
-        catch (SecurityTokenException ex)
-        {
-            // Log: Token üretim hatası
-            return ApiResponse<string>.Fail(Messages.Auth.TokenGenerationFailed, ErrorCodeEnum.Security);
-        }
-        catch (ArgumentException ex)
-        {
-            // Log: Geçersiz parametre
-            return ApiResponse<string>.Fail(Messages.General.InvalidParameter, ErrorCodeEnum.ValidationError);
-        }
-        catch (Exception ex)
-        {
-            // Log: Beklenmeyen hata
-            return ApiResponse<string>.Fail(Messages.General.UnexpectedErrorOccurred, ErrorCodeEnum.Unknown);
-        }
+        TokenResponseDto token = jwtService.CreateToken(user);
+        return Task.FromResult(token);
     }
 
-    public async Task<ApiResponse<string>> LoginAsync(LoginDto loginDto)
+    public async Task<TokenResponseDto> LoginAsync(LoginDto dto)
     {
-        var user = await userManager.FindByEmailAsync(loginDto.Email);
-        if (user is null) return ApiResponse<String>.Fail("E-posta adresi bulunamadı", ErrorCodeEnum.NotFound);
+        User user = await userRepository.GetByEmailAsync(dto.Email) ?? throw new Exception("User not found.");
 
-        var result = await userRepository.LoginAsync(loginDto, user);
-        if (!result.Succeeded) return ApiResponse<String>.Fail("Email veya şifre hatalı", ErrorCodeEnum.NotFound);
+        if (!passwordHasher.Verify(dto.Password, user.PasswordHash))
+            throw new Exception("Invalid password.");
 
-        return ApiResponse<String>.SuccessNoDataResult("Giriş başarılı");
+        return await GenerateTokenAsync(user);
     }
 
-    public async Task<ApiResponse<string>> LogoutAsync()
+    public async Task<TokenResponseDto> RegisterAsync(RegisterDto dto)
     {
-        await userRepository.LogoutAsync();
-        return ApiResponse<String>.SuccessNoDataResult("Çıkış işlemi başarılı");
+        if (await userRepository.ExistsByEmailAsync(dto.Email))
+            throw new Exception("Email already exists.");
+
+        var hashedPassword = passwordHasher.Hash(dto.Password);
+        var user = new User
+        {
+            Name = dto.Name,
+            Surname = dto.Surname,
+            Email = dto.Email,
+            Phone = dto.Phone,
+            PasswordHash = hashedPassword
+        };
+
+        await userRepository.AddAsync(user);
+
+        return await GenerateTokenAsync(user);
     }
 }

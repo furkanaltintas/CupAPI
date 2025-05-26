@@ -1,9 +1,10 @@
 ﻿using CupAPI.Application.Common.Constants;
 using CupAPI.Application.Common.Enums;
+using CupAPI.Application.Common.Helpers.Validation.Abstract;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CupAPI.Application.Common.Helpers;
+namespace CupAPI.Application.Common.Helpers.Validation.Concrete;
 
 public sealed class ValidationHelper(IServiceProvider serviceProvider) : IValidationHelper
 {

@@ -1,4 +1,4 @@
-﻿namespace CupAPI.Application.Dtos.UserDtos;
+﻿namespace CupAPI.Application.Dtos.AuthDtos;
 
 public sealed class LoginDto
 {

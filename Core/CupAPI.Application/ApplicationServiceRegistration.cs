@@ -1,4 +1,5 @@
-﻿using CupAPI.Application.Common.Helpers;
+﻿using CupAPI.Application.Common.Helpers.Validation.Abstract;
+using CupAPI.Application.Common.Helpers.Validation.Concrete;
 using CupAPI.Application.Common.Rules;
 using CupAPI.Application.Common.Rules.CategoryRules;
 using CupAPI.Application.Common.Services;

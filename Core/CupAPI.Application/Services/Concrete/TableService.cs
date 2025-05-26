@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CupAPI.Application.Common.Constants;
 using CupAPI.Application.Common.Enums;
-using CupAPI.Application.Common.Helpers;
+using CupAPI.Application.Common.Helpers.Validation.Abstract;
 using CupAPI.Application.Common.Rules.TableRules;
 using CupAPI.Application.Dtos.TableDtos;
 using CupAPI.Application.Interfaces;

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CupAPI.Application.Common.Helpers;
+using CupAPI.Application.Common.Helpers.Validation.Abstract;
 
 namespace CupAPI.Application.Common.Services;
 
