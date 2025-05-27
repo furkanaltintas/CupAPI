@@ -7,40 +7,34 @@ using FluentValidation;
 namespace CupAPI.Application.Services.Concrete;
 
 public class UserService(
-    IUserRepository userRepository,
-    IValidator<RegisterDto> registerValidator) : IUserService
+    IUserRepository userRepository) : IUserService
 {
-    public async Task<ApiResponse<string>> LoginAsync(LoginDto loginDto)
-    {
-        var user = await userManager.FindByEmailAsync(loginDto.Email);
-        if (user is null) return ApiResponse<String>.Fail("E-posta adresi bulunamadı", ErrorCodeEnum.NotFound);
-
-        var result = await userRepository.LoginAsync(loginDto, user);
-        if (!result.Succeeded) return ApiResponse<String>.Fail("Email veya şifre hatalı", ErrorCodeEnum.NotFound);
-
-        return ApiResponse<String>.SuccessNoDataResult("Giriş başarılı");
-    }
-
-    public async Task<ApiResponse<string>> RegisterAsync(RegisterDto registerDto)
+    public async Task<ApiResponse<string>> AddRoleToUser(string email, string roleName)
     {
         try
         {
-            var validate = await registerValidator.ValidateAsync(registerDto);
-            if (!validate.IsValid) return ApiResponse<String>.Fail("", ErrorCodeEnum.ValidationError);
+            var result = await userRepository.AddRoleToUserAsync(email, roleName);
+            if(!result) return ApiResponse<string>.Fail("User not found or role does not exist.", ErrorCodeEnum.NotFound);
 
-            var result = await userRepository.RegisterAsync(registerDto);
-            if (result.Succeeded) return ApiResponse<String>.SuccessNoDataResult("Kayıt işlemi başarılı bir şekilde gerçekleşmiştir");
-            else return ApiResponse<String>.Fail("", ErrorCodeEnum.NotFound);
+            return ApiResponse<String>.SuccessNoDataResult("Role added to user successfully.");
         }
         catch
         {
-            return ApiResponse<String>.Fail("", ErrorCodeEnum.NotFound);
+            return ApiResponse<string>.Fail("Failed to add role to user.", ErrorCodeEnum.Exception);
         }
     }
 
-    public async Task<ApiResponse<string>> LogoutAsync()
+    public async Task<ApiResponse<string>> CreateRole(string roleName)
     {
-        await userRepository.LogoutAsync();
-        return ApiResponse<String>.SuccessNoDataResult("Çıkış işlemi başarılı");
+        try
+        {
+            var result = await userRepository.CreateRoleAsync(roleName);
+            if(!result) return ApiResponse<String>.Fail("Role already exists or invalid role name.", ErrorCodeEnum.NotFound);
+
+            return ApiResponse<String>.SuccessNoDataResult("Role created successfully.");
+        }
+        catch
+        {
+            return ApiResponse<String>.Fail("Role creation failed.", ErrorCodeEnum.Exception);
+        }
     }
-}

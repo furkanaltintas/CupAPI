@@ -10,10 +10,10 @@ namespace CupAPI.Application.Services.Concrete;
 public sealed class AuthService(
     IUserRepository userRepository, IJwtService jwtService, IPasswordHasher passwordHasher) : IAuthService
 {
-    public Task<TokenResponseDto> GenerateTokenAsync(User user)
+    public async Task<TokenResponseDto> GenerateTokenAsync(User user)
     {
         TokenResponseDto token = jwtService.CreateToken(user);
-        return Task.FromResult(token);
+        return token;
     }
 
     public async Task<TokenResponseDto> LoginAsync(LoginDto dto)

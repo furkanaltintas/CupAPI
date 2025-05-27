@@ -4,8 +4,6 @@ namespace CupAPI.Application.Services.Abstract;
 
 public interface IUserService
 {
-    Task<ApiResponse<String>> LoginAsync(LoginDto loginDto);
-    Task<ApiResponse<String>> RegisterAsync(RegisterDto registerDto);
-    Task<ApiResponse<String>> LogoutAsync();
-    Task<bool> CheckUser(LoginDto loginDto);
+    Task<ApiResponse<String>> CreateRole(string roleName);
+    Task<ApiResponse<String>> AddRoleToUser(string email, string roleName);
 }
