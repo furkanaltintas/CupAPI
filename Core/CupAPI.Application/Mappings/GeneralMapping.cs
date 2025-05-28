@@ -21,8 +21,6 @@ public sealed class GeneralMapping : Profile
 
         CreateMap<MenuItem, CategoriesMenuItemDto>().ReverseMap();
         CreateMap<Category, ResultCategoriesWithMenuDto>().ReverseMap();
-
-        CreateMap<AppIdentityUser, RegisterDto>().ReverseMap();
     }
 
     private void CreateBidirectionalMaps<TEntity, TResultDto, TDetailDto, TCreateDto, TUpdateDto>()

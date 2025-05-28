@@ -10,8 +10,8 @@ namespace CupAPI.Persistence.Repository;
 public class UserRepository : GenericRepository<User>, IUserRepository
 {
     private readonly UserManager<AppIdentityUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    public UserRepository(AppDbContext context, UserManager<AppIdentityUser> userManager, RoleManager<IdentityRole> roleManager) : base(context)
+    private readonly RoleManager<AppIdentityRole> _roleManager;
+    public UserRepository(AppDbContext context, UserManager<AppIdentityUser> userManager, RoleManager<AppIdentityRole> roleManager) : base(context)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -41,7 +41,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         var roleExists = await _roleManager.RoleExistsAsync(roleName);
         if (roleExists) return false;
 
-        var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+        var result = await _roleManager.CreateAsync(new AppIdentityRole { Name = roleName });
         if (result.Succeeded) return true;
         return false;
     }

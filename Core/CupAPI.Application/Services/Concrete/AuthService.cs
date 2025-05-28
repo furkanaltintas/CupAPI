@@ -10,7 +10,7 @@ namespace CupAPI.Application.Services.Concrete;
 public sealed class AuthService(
     IUserRepository userRepository, IJwtService jwtService, IPasswordHasher passwordHasher) : IAuthService
 {
-    public async Task<TokenResponseDto> GenerateTokenAsync(User user)
+    public TokenResponseDto GenerateTokenAsync(User user)
     {
         TokenResponseDto token = jwtService.CreateToken(user);
         return token;
@@ -23,7 +23,7 @@ public sealed class AuthService(
         if (!passwordHasher.Verify(dto.Password, user.PasswordHash))
             throw new Exception("Invalid password.");
 
-        return await GenerateTokenAsync(user);
+        return GenerateTokenAsync(user);
     }
 
     public async Task<TokenResponseDto> RegisterAsync(RegisterDto dto)
@@ -43,6 +43,6 @@ public sealed class AuthService(
 
         await userRepository.AddAsync(user);
 
-        return await GenerateTokenAsync(user);
+        return GenerateTokenAsync(user);
     }
 }

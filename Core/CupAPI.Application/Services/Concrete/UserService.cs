@@ -14,7 +14,7 @@ public class UserService(
         try
         {
             var result = await userRepository.AddRoleToUserAsync(email, roleName);
-            if(!result) return ApiResponse<string>.Fail("User not found or role does not exist.", ErrorCodeEnum.NotFound);
+            if (!result) return ApiResponse<string>.Fail("User not found or role does not exist.", ErrorCodeEnum.NotFound);
 
             return ApiResponse<String>.SuccessNoDataResult("Role added to user successfully.");
         }
@@ -29,7 +29,7 @@ public class UserService(
         try
         {
             var result = await userRepository.CreateRoleAsync(roleName);
-            if(!result) return ApiResponse<String>.Fail("Role already exists or invalid role name.", ErrorCodeEnum.NotFound);
+            if (!result) return ApiResponse<String>.Fail("Role already exists or invalid role name.", ErrorCodeEnum.NotFound);
 
             return ApiResponse<String>.SuccessNoDataResult("Role created successfully.");
         }
@@ -38,3 +38,4 @@ public class UserService(
             return ApiResponse<String>.Fail("Role creation failed.", ErrorCodeEnum.Exception);
         }
     }
+}
