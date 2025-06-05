@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-using CupAPI.Domain.Entities;
+﻿using CupAPI.Domain.Entities;
 using CupAPI.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace CupAPI.Persistence.Context;
 

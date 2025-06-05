@@ -1,7 +1,7 @@
-﻿using System.Linq.Expressions;
-using CupAPI.Application.Interfaces;
+﻿using CupAPI.Application.Interfaces;
 using CupAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CupAPI.Persistence.Repository;
 

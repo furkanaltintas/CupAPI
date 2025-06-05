@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace CupAPI.Persistence.Context.Identity;
+namespace CupAPI.Domain.Entities;
 
 public sealed class AppIdentityRole : IdentityRole
 {

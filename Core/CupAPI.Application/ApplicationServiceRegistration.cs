@@ -13,6 +13,7 @@ using CupAPI.Application.Services.Abstract;
 using CupAPI.Application.Services.Concrete;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace CupAPI.Application;
 
@@ -20,6 +21,8 @@ public static class ApplicationServiceRegistration
 {
     public static IServiceCollection ApplicationServices(this IServiceCollection services)
     {
+        Assembly assembly = Assembly.GetExecutingAssembly();
+
         services
             .AddScoped<IAuthService, AuthService>()
             .AddScoped<ICategoryService, CategoryService>()
@@ -48,6 +51,11 @@ public static class ApplicationServiceRegistration
         services
             .AddScoped<IValidationHelper, ValidationHelper>()
             .AddValidatorsFromAssembly(typeof(ApplicationServiceRegistration).Assembly);
+
+        services.AddMediatR(configuration =>
+        {
+            configuration.RegisterServicesFromAssembly(assembly);
+        });
 
         services
             .AddAutoMapper(typeof(GeneralMapping));

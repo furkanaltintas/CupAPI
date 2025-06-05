@@ -6,7 +6,7 @@ namespace CupAPI.API.Extensions;
 
 public static class JwtConfiguration
 {
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddJwtAuthenticationService(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthentication(opt =>
         {

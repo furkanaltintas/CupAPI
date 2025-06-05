@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CupAPI.Application.Dtos.AuthDtos;
 using CupAPI.Application.Dtos.CategoryDtos;
 using CupAPI.Application.Dtos.MenuItemDtos;
 using CupAPI.Application.Dtos.OrderDtos;

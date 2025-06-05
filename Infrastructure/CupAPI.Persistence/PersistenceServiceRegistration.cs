@@ -1,4 +1,5 @@
 ﻿using CupAPI.Application.Interfaces;
+using CupAPI.Domain.Entities;
 using CupAPI.Persistence.Context;
 using CupAPI.Persistence.Context.Identity;
 using CupAPI.Persistence.Repository;

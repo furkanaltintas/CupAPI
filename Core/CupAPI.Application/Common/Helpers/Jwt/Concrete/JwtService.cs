@@ -1,17 +1,17 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using CupAPI.Application.Common.Helpers.Jwt.Abstract;
+﻿using CupAPI.Application.Common.Helpers.Jwt.Abstract;
 using CupAPI.Application.Dtos.AuthDtos;
 using CupAPI.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace CupAPI.Application.Common.Helpers.Jwt.Concrete;
 
 public sealed class JwtService(IConfiguration configuration) : IJwtService
 {
-    public TokenResponseDto CreateToken(User user)
+    public TokenResponseDto CreateToken(AppIdentityUser user)
     {
         SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
         SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256);
@@ -20,9 +20,9 @@ public sealed class JwtService(IConfiguration configuration) : IJwtService
 
         Claim[] claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.AppUserId),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role),
+            new Claim(ClaimTypes.Role, "Role"),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

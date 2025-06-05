@@ -5,5 +5,5 @@ namespace CupAPI.Application.Common.Helpers.Jwt.Abstract;
 
 public interface IJwtService
 {
-    TokenResponseDto CreateToken(User user);
+    TokenResponseDto CreateToken(AppIdentityUser user);
 }

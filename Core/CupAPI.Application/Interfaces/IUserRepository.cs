@@ -1,12 +1,13 @@
 ﻿using CupAPI.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace CupAPI.Application.Interfaces;
 
 public interface IUserRepository : IGenericRepository<User>
 {
-    Task AddAsync(User user);
-    Task<User?> GetByEmailAsync(string email);
-    Task<bool> ExistsByEmailAsync(string email);
-    Task<bool> CreateRoleAsync(string roleName);
-    Task<bool> AddRoleToUserAsync(string email, string roleName);
+    Task<IdentityResult> AddAsync(AppIdentityUser user, string password);
+    Task<AppIdentityUser?> GetByEmailAsync(string email);
+    Task<Boolean> ExistsByEmailAsync(string email);
+    Task<Boolean> CreateRoleAsync(string roleName);
+    Task<Boolean> AddRoleToUserAsync(string email, string roleName);
 }

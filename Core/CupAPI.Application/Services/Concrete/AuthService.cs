@@ -1,48 +1,43 @@
 ﻿using CupAPI.Application.Common.Helpers.Jwt.Abstract;
-using CupAPI.Application.Common.Helpers.PasswordHasher.Abstract;
 using CupAPI.Application.Dtos.AuthDtos;
-using CupAPI.Application.Interfaces;
 using CupAPI.Application.Services.Abstract;
 using CupAPI.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
-namespace CupAPI.Application.Services.Concrete;
-
-public sealed class AuthService(
-    IUserRepository userRepository, IJwtService jwtService, IPasswordHasher passwordHasher) : IAuthService
+public class AuthService(
+    IUserService userService,
+    SignInManager<AppIdentityUser> signInManager,
+    IJwtService jwtService) : IAuthService
 {
-    public TokenResponseDto GenerateTokenAsync(User user)
+    public async Task<TokenResponseDto> RegisterAsync(RegisterDto dto)
     {
-        TokenResponseDto token = jwtService.CreateToken(user);
-        return token;
+        bool exists = await userService.EmailExistsAsync(dto.Email);
+        if (exists) throw new Exception("Bu e-posta ile zaten kayıtlı bir kullanıcı var.");
+
+        IdentityResult result = await userService.CreateUserAsync(dto);
+        if (!result.Succeeded)
+        {
+            String errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new Exception($"Kullanıcı oluşturulamadı: {errors}");
+        }
+
+        // İsteğe bağlı rol ataması:
+        await userService.AssignRoleAsync(dto.Email, "User");
+
+        AppIdentityUser user = await userService.GetByEmailAsync(dto.Email)
+            ?? throw new Exception("Kullanıcı oluşturuldu ancak erişilemedi.");
+
+        return jwtService.CreateToken(user);
     }
 
     public async Task<TokenResponseDto> LoginAsync(LoginDto dto)
     {
-        User user = await userRepository.GetByEmailAsync(dto.Email) ?? throw new Exception("User not found.");
+        AppIdentityUser user = await userService.GetByEmailAsync(dto.Email)
+            ?? throw new Exception("Kullanıcı bulunamadı.");
 
-        if (!passwordHasher.Verify(dto.Password, user.PasswordHash))
-            throw new Exception("Invalid password.");
+        SignInResult result = await signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
+        if (!result.Succeeded) throw new Exception("Geçersiz şifre.");
 
-        return GenerateTokenAsync(user);
-    }
-
-    public async Task<TokenResponseDto> RegisterAsync(RegisterDto dto)
-    {
-        if (await userRepository.ExistsByEmailAsync(dto.Email))
-            throw new Exception("Email already exists.");
-
-        var hashedPassword = passwordHasher.Hash(dto.Password);
-        var user = new User
-        {
-            Name = dto.Name,
-            Surname = dto.Surname,
-            Email = dto.Email,
-            Phone = dto.Phone,
-            PasswordHash = hashedPassword
-        };
-
-        await userRepository.AddAsync(user);
-
-        return GenerateTokenAsync(user);
+        return jwtService.CreateToken(user);
     }
 }

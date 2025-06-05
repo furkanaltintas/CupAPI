@@ -17,24 +17,24 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         _roleManager = roleManager;
     }
 
-    public async Task AddAsync(User user)
+    public async Task<Boolean> ExistsByEmailAsync(string email)
     {
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        var user = await _userManager.FindByEmailAsync(email);
+        return user is not null;
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
+    public async Task<AppIdentityUser?> GetByEmailAsync(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+        return await _userManager.Users
+            .FirstOrDefaultAsync(u => u.Email!.ToLower() == email.ToLower());
     }
 
-    public async Task<bool> ExistsByEmailAsync(string email)
+    public async Task<IdentityResult> AddAsync(AppIdentityUser user, string password)
     {
-        return await _context.Users
-            .AnyAsync(u => u.Email.ToLower() == email.ToLower());
+        return await _userManager.CreateAsync(user, password);
     }
 
-    public async Task<bool> CreateRoleAsync(string roleName)
+    public async Task<Boolean> CreateRoleAsync(string roleName)
     {
         if (string.IsNullOrWhiteSpace(roleName)) return false;
 
@@ -42,11 +42,10 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         if (roleExists) return false;
 
         var result = await _roleManager.CreateAsync(new AppIdentityRole { Name = roleName });
-        if (result.Succeeded) return true;
-        return false;
+        return result.Succeeded;
     }
 
-    public async Task<bool> AddRoleToUserAsync(string email, string roleName)
+    public async Task<Boolean> AddRoleToUserAsync(string email, string roleName)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user is null) return false;
@@ -55,7 +54,6 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         if (!roleExists) return false;
 
         var result = await _userManager.AddToRoleAsync(user, roleName);
-        if (result.Succeeded) return true;
-        return false;
+        return result.Succeeded;
     }
 }

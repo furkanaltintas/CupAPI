@@ -1,6 +1,7 @@
-using CupAPI.API.Extensions;
+using CupAPI.API;
 using CupAPI.Application;
 using CupAPI.Persistence;
+using CupAPI.Persistence.Middlewares;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,12 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Layered Services
 builder.Services.ApplicationServices();
 builder.Services.PersistenceService(builder.Configuration);
+builder.Services.PresentationService(builder.Configuration, builder.Host); // Controller, Jwt, Serilog and Authorization
 
-// JWT Authentication
-builder.Services.AddJwtAuthentication(builder.Configuration);
-
-// General Services
-builder.Services.AddControllers();
+// General
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
@@ -35,5 +33,6 @@ if (app.Environment.IsDevelopment()) app.MapOpenApi();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<SerilogMiddleware>();
 app.MapControllers();
 app.Run();
