@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using CupAPI.API;
 using CupAPI.Application;
 using CupAPI.Persistence;
@@ -18,6 +19,15 @@ builder.Services.AddHttpContextAccessor();
 
 /**************************************************************/
 
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(
+    builder.Configuration.GetSection("IpRateLimiting"));
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+/**************************************************************/
+
+
 var app = builder.Build();
 
 // Scalar Docs
@@ -30,6 +40,8 @@ app.MapScalarApiReference(opt =>
 
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
+
+app.UseIpRateLimiting();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

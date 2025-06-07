@@ -4,7 +4,8 @@ using MediatR;
 
 namespace CupAPI.Application.Features.Menu.Queries.GetAllMenus;
 
-public sealed class GetAllMenusQueryHandler(IMenuItemService menuItemService) : IRequestHandler<GetAllMenusQuery, ApiResponse<List<ResultMenuItemDto>{
+public sealed class GetAllMenusQueryHandler(IMenuItemService menuItemService) : IRequestHandler<GetAllMenusQuery, ApiResponse<List<ResultMenuItemDto>>>
+{
     public async Task<ApiResponse<List<ResultMenuItemDto>>> Handle(GetAllMenusQuery request, CancellationToken cancellationToken)
     {
         return await menuItemService.GetAllAsync();

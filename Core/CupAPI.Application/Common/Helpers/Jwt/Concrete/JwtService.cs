@@ -1,6 +1,7 @@
 ﻿using CupAPI.Application.Common.Helpers.Jwt.Abstract;
 using CupAPI.Application.Dtos.AuthDtos;
 using CupAPI.Domain.Entities;
+using CupAPI.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,7 +23,7 @@ public sealed class JwtService(IConfiguration configuration) : IJwtService
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, "Role"),
+            new Claim(ClaimTypes.Role, UserRole.Admin),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
