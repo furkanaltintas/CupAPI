@@ -40,4 +40,27 @@ public class AuthService(
 
         return jwtService.CreateToken(user);
     }
+
+    public async Task<TokenResponseDto> RegisterCustomerAsync(RegisterDto dto)
+    {
+        bool exists = await userService.EmailExistsAsync(dto.Email);
+        if (exists) throw new Exception("Bu e-posta ile zaten kayıtlı bir kullanıcı var.");
+
+        IdentityResult result = await userService.CreateUserAsync(dto);
+        if (!result.Succeeded)
+        {
+            String errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new Exception($"Müşteri oluşturulamadı: {errors}");
+        }
+
+        // İsteğe bağlı rol ataması:
+        var roleResult =  await userService.AssignRoleAsync(dto.Email, "Customer");
+        if(!roleResult)
+            throw new Exception("Müşteri oluşturuldu ancak rol ataması yapılamadı.");
+
+        AppIdentityUser user = await userService.GetByEmailAsync(dto.Email)
+            ?? throw new Exception("Müşteri oluşturuldu ancak erişilemedi.");
+
+        return jwtService.CreateToken(user);
+    }
 }

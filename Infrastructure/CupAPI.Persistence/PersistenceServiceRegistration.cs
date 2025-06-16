@@ -2,6 +2,7 @@
 using CupAPI.Domain.Entities;
 using CupAPI.Persistence.Context;
 using CupAPI.Persistence.Context.Identity;
+using CupAPI.Persistence.Interceptors;
 using CupAPI.Persistence.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

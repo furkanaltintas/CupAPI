@@ -22,7 +22,7 @@ namespace CupAPI.Persistence.Migrations.AppIdentityDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CupAPI.Persistence.Context.Identity.AppIdentityRole", b =>
+            modelBuilder.Entity("CupAPI.Domain.Entities.AppIdentityRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -49,7 +49,7 @@ namespace CupAPI.Persistence.Migrations.AppIdentityDb
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("CupAPI.Persistence.Context.Identity.AppIdentityUser", b =>
+            modelBuilder.Entity("CupAPI.Domain.Entities.AppIdentityUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -230,7 +230,7 @@ namespace CupAPI.Persistence.Migrations.AppIdentityDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("CupAPI.Persistence.Context.Identity.AppIdentityRole", null)
+                    b.HasOne("CupAPI.Domain.Entities.AppIdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -239,7 +239,7 @@ namespace CupAPI.Persistence.Migrations.AppIdentityDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("CupAPI.Persistence.Context.Identity.AppIdentityUser", null)
+                    b.HasOne("CupAPI.Domain.Entities.AppIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -248,7 +248,7 @@ namespace CupAPI.Persistence.Migrations.AppIdentityDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("CupAPI.Persistence.Context.Identity.AppIdentityUser", null)
+                    b.HasOne("CupAPI.Domain.Entities.AppIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -257,13 +257,13 @@ namespace CupAPI.Persistence.Migrations.AppIdentityDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("CupAPI.Persistence.Context.Identity.AppIdentityRole", null)
+                    b.HasOne("CupAPI.Domain.Entities.AppIdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CupAPI.Persistence.Context.Identity.AppIdentityUser", null)
+                    b.HasOne("CupAPI.Domain.Entities.AppIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -272,7 +272,7 @@ namespace CupAPI.Persistence.Migrations.AppIdentityDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("CupAPI.Persistence.Context.Identity.AppIdentityUser", null)
+                    b.HasOne("CupAPI.Domain.Entities.AppIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

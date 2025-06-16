@@ -1,7 +1,6 @@
 ﻿using CupAPI.Application.Interfaces;
 using CupAPI.Domain.Entities;
 using CupAPI.Persistence.Context;
-using CupAPI.Persistence.Context.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,13 +46,24 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 
     public async Task<Boolean> AddRoleToUserAsync(string email, string roleName)
     {
+        // E-posta ile kullanıcıyı bul
         var user = await _userManager.FindByEmailAsync(email);
-        if (user is null) return false;
+        if (user is null) return false; // Kullanıcı bulunamadı
 
+        // Rol sistemde tanımlı mı kontrol et
         var roleExists = await _roleManager.RoleExistsAsync(roleName);
-        if (!roleExists) return false;
+        if (!roleExists) return false; // Rol tanımlı değil
 
+        // Kullanıcı zaten bu role sahip mi kontrol et (Kullanıcı zaten bu roldeyse tekrar ekleme false dön)
+        if (!await _userManager.IsInRoleAsync(user, roleName))
+        {
+            return false; // Kullanıcı zaten bu role sahip, tekrar ekleme
+        }
+
+        // Rolü kullanıcıya ata
         var result = await _userManager.AddToRoleAsync(user, roleName);
+
+        // Eğer işlem başarılıysa true, aksi halde false dön
         return result.Succeeded;
     }
 }

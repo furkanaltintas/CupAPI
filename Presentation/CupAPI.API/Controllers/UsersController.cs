@@ -6,7 +6,7 @@ using AuthorizationPolicy = CupAPI.Domain.Enums.AuthorizationPolicy;
 namespace CupAPI.API.Controllers;
 
 [Authorize(Policy = AuthorizationPolicy.AdminOnly)]
-public class UserController(IUserService userService) : BaseApiController
+public class UsersController(IUserService userService) : BaseApiController
 {
     //[HttpPost("createrole")]
     //public async Task<IActionResult> CreateRole(string roleName)
