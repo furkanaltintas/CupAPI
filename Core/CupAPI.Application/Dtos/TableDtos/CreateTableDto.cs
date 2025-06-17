@@ -2,10 +2,10 @@
 
 namespace CupAPI.Application.Dtos.TableDtos;
 
-public sealed record CreateTableDto
+public record CreateTableDto
 {
     public TableType Type { get; set; }
-    public string TableCode { get; set; }
+    public string TableCode { get; set; } = string.Empty;
     public int TableNumber { get; set; }
     public int Capacity { get; set; }
 }

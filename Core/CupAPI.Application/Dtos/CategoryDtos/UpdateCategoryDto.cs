@@ -1,15 +1,12 @@
 ﻿namespace CupAPI.Application.Dtos.CategoryDtos;
 
-public sealed record UpdateCategoryDto
+public record UpdateCategoryDto : ResultCategoryDto
 {
     public UpdateCategoryDto() { }
 
-    public UpdateCategoryDto(int ıd, string name)
+    public UpdateCategoryDto(int id, string name)
     {
-        Id = ıd;
+        Id = id;
         Name = name;
     }
-
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
 }

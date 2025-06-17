@@ -1,7 +1,6 @@
 ﻿namespace CupAPI.Application.Dtos.CategoryDtos;
 
-public sealed record ResultCategoryDto
+public record ResultCategoryDto : CreateCategoryDto
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
 }

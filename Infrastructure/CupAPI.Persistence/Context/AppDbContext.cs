@@ -11,9 +11,13 @@ public class AppDbContext : DbContext
 {
     private readonly EntityAuditInterceptor _entityAuditInterceptor;
 
-    public AppDbContext(DbContextOptions<AppDbContext> options, EntityAuditInterceptor entityAuditInterceptor) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options, EntityAuditInterceptor? entityAuditInterceptor) : base(options)
     {
-        _entityAuditInterceptor = entityAuditInterceptor ?? throw new ArgumentNullException(nameof(entityAuditInterceptor));
+        _entityAuditInterceptor = entityAuditInterceptor;
+    }
+
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,18 +31,19 @@ public class AppDbContext : DbContext
 
     public override int SaveChanges()
     {
-        _entityAuditInterceptor.ApplyAuditInformation(ChangeTracker);
+        _entityAuditInterceptor?.ApplyAuditInformation(ChangeTracker); // Save işlemi öncesi audit bilgilerini uygula
         return base.SaveChanges();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        _entityAuditInterceptor.ApplyAuditInformation(ChangeTracker);
+        _entityAuditInterceptor?.ApplyAuditInformation(ChangeTracker); // Save işlemi öncesi audit bilgilerini uygula
         return await base.SaveChangesAsync(cancellationToken);
     }
 
 
     #region DbSets
+    public DbSet<CafeInfo> CafeInfos => Set<CafeInfo>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<MenuItem> MenuItems => Set<MenuItem>();
     public DbSet<Order> Orders => Set<Order>();
@@ -48,13 +53,13 @@ public class AppDbContext : DbContext
     #endregion
 }
 
-public class AppDbContextFactory(EntityAuditInterceptor entityAuditInterceptor) : IDesignTimeDbContextFactory<AppDbContext>
+public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
     public AppDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=CupAppDB;Trusted_Connection=True;");
 
-        return new AppDbContext(optionsBuilder.Options, entityAuditInterceptor);
+        return new AppDbContext(optionsBuilder.Options);
     }
 }

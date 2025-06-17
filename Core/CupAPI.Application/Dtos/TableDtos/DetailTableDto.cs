@@ -2,11 +2,6 @@
 
 namespace CupAPI.Application.Dtos.TableDtos;
 
-public sealed record DetailTableDto
+public record DetailTableDto : ResultTableDto
 {
-    public int Id { get; set; }
-    public TableType Type { get; set; }
-    public string TableCode { get; set; }
-    public int TableNumber { get; set; }
-    public int Capacity { get; set; }
 }
