@@ -4,9 +4,9 @@ using CupAPI.Persistence.Context;
 
 namespace CupAPI.Persistence.Repository;
 
-public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
+public class CafeInfoRepository : GenericRepository<CafeInfo>, ICafeInfoRepository
 {
-    public CategoryRepository(AppDbContext context) : base(context)
+    public CafeInfoRepository(AppDbContext context) : base(context)
     {
     }
 }

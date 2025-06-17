@@ -78,4 +78,16 @@ public static class Messages
         public const string ErrorWhileDeleting = "Sipariş kalemi silinirken bir hata oluştu";
         public const string ErrorWhileFetching = "Sipariş kalemi getirilirken bir hata oluştu";
     }
+
+    public static class CafeInfo
+    {
+        public const string NotFound = "Kafe bilgisi bulunamadı";
+        public const string Created = "Kafe bilgisi başarıyla oluşturuldu";
+        public const string Updated = "Kafe bilgisi başarıyla güncellendi";
+        public const string Deleted = "Kafe bilgisi başarıyla silindi";
+        public const string ErrorWhileAdding = "Kafe bilgisi eklenirken bir hata oluştu";
+        public const string ErrorWhileUpdating = "Kafe bilgisi güncellenirken bir hata oluştu";
+        public const string ErrorWhileDeleting = "Kafe bilgisi silinirken bir hata oluştu";
+        public const string ErrorWhileFetching = "Kafe bilgisi getirilirken bir hata oluştu";
+    }
 }
