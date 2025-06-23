@@ -48,6 +48,7 @@ public class AppDbContext : DbContext
     public DbSet<MenuItem> MenuItems => Set<MenuItem>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+    public DbSet<Review> Reviews => Set<Review>();
     public DbSet<Table> Tables => Set<Table>();
     public DbSet<User> Users => Set<User>();
     #endregion

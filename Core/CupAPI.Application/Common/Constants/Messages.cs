@@ -21,7 +21,7 @@ public static class Messages
 
     public static class Category
     {
-        public const string NotFound = "Kategori başarıyla bulunamadı";
+        public const string NotFound = "Kategori bulunamadı";
         public const string Created = "Kategori başarıyla oluşturuldu";
         public const string Updated = "Kategori başarıyla güncellendi";
         public const string Deleted = "Kategori başarıyla silindi";
@@ -33,7 +33,7 @@ public static class Messages
 
     public static class MenuItem
     {
-        public const string NotFound = "Menü başarıyla bulunamadı";
+        public const string NotFound = "Menü bulunamadı";
         public const string Created = "Menü başarıyla oluşturuldu";
         public const string Updated = "Menü başarıyla güncellendi";
         public const string Deleted = "Menü başarıyla silindi";
@@ -89,5 +89,17 @@ public static class Messages
         public const string ErrorWhileUpdating = "Kafe bilgisi güncellenirken bir hata oluştu";
         public const string ErrorWhileDeleting = "Kafe bilgisi silinirken bir hata oluştu";
         public const string ErrorWhileFetching = "Kafe bilgisi getirilirken bir hata oluştu";
+    }
+
+    public static class Review
+    {
+        public const string NotFound = "Yorum bulunamadı";
+        public const string Created = "Yorum başarıyla oluşturuldu";
+        public const string Updated = "Yorum başarıyla güncellendi";
+        public const string Deleted = "Yorum başarıyla silindi";
+        public const string ErrorWhileAdding = "Yorum eklenirken bir hata oluştu";
+        public const string ErrorWhileUpdating = "Yorum güncellenirken bir hata oluştu";
+        public const string ErrorWhileDeleting = "Yorum silinirken bir hata oluştu";
+        public const string ErrorWhileFetching = "Yorum getirilirken bir hata oluştu";
     }
 }

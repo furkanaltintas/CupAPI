@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CupAPI.API.Controllers.Common;
 
-[ApiController]
 [Authorize]
+[ApiController]
 [Route("api/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {

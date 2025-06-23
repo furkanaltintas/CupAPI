@@ -4,6 +4,7 @@ using CupAPI.Application.Dtos.CategoryDtos;
 using CupAPI.Application.Dtos.MenuItemDtos;
 using CupAPI.Application.Dtos.OrderDtos;
 using CupAPI.Application.Dtos.OrderItemDtos;
+using CupAPI.Application.Dtos.ReviewDtos;
 using CupAPI.Application.Dtos.TableDtos;
 using CupAPI.Domain.Entities;
 
@@ -19,6 +20,7 @@ public sealed class GeneralMapping : Profile
         CreateBidirectionalMaps<Order, ResultOrderDto, DetailOrderDto, CreateOrderDto, UpdateOrderDto>();
         CreateBidirectionalMaps<OrderItem, ResultOrderItemDto, DetailOrderItemDto, CreateOrderItemDto, UpdateOrderItemDto>();
         CreateBidirectionalMaps<CafeInfo, ResultCafeInfoDto, DetailCafeInfoDto, CreateCafeInfoDto, UpdateCafeInfoDto>();
+        CreateBidirectionalMaps<Review, ResultReviewDto, DetailReviewDto, CreateReviewDto, UpdateReviewDto>();
 
         CreateMap<MenuItem, CategoriesMenuItemDto>().ReverseMap();
         CreateMap<Category, ResultCategoriesWithMenuDto>().ReverseMap();
